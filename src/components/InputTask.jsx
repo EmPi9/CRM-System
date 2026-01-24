@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AddTask from "../api/AddTask";
 
 export default function InputTask() {
     const [taskTitle, setTaskTitle] = useState('')
@@ -7,24 +8,13 @@ export default function InputTask() {
         setTaskTitle(e.target.value)
     }
 
-    function AddTask () {
-        fetch("https://jsonplaceholder.typicode.com/posts", {
-        method: "POST", 
-        headers: { "Content-Type": "application/json" }, 
-          body: JSON.stringify({
-            title: taskTitle,
-            isDone: false,
-          }) 
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data)
-        })
+    const handleSubmit = () => {
+        AddTask(taskTitle);
+        setTaskTitle('')
     }
 
-    return <div>
-        <input type="text" onChange={handleInputChange} value={taskTitle} />
-        <button onClick={AddTask} type="submit">Создать задачу
-        </button>
+    return <div className="container">
+        <input type="text" onChange={handleInputChange} value={taskTitle} placeholder="Задача" />
+        <button onClick={handleSubmit} type="submit" className="butt">Создать</button>
     </div>
  }
