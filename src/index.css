@@ -17,7 +17,7 @@
     cursor: pointer;
 }
 
-.task{
+.task {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     margin: 10px;
     border-radius: 5px;
@@ -25,4 +25,27 @@
     padding: 15px;
     margin: 10px auto;
     width: 500px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.task-butts {
+    display: flex;
+    gap: 10px;
+}
+
+.icon {
+    background-color: #5292FE;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 0;
+}
+
+.icon:last-child{
+    background-color: #FF6559;
+}
+
+.icon img {
+    width: 15px;
 }
