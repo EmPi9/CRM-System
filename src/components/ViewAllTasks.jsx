@@ -87,6 +87,29 @@ export default function ViewAllTasks() {
         setEditingId(null)
     }
 
+    const completeTask = async (taskId, taskTitle, taskDone) => {
+        try {
+            let response = await fetch(`https://easydev.club/api/v1/todos/${taskId}`, {
+            method: "PUT",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: taskTitle,
+                completed: true,
+                isDone: !taskDone
+                })
+            })
+
+            if(response.ok) {
+                fetchData()
+            }
+
+        } catch (error) {
+            console.log('Ошибка при удалении задачи:', error);
+        } 
+    }
+
     return <>
         <div className="container">
             <input type="text" onChange={handleInputChange} value={taskTitle} placeholder="Задача" />
@@ -96,9 +119,10 @@ export default function ViewAllTasks() {
         <div className="container">
            {dataTasks.map(item => (
             <div key={item.id} className="task">
+                <input type="checkbox" className="round-checkbox" checked={item.isDone} onChange={() => completeTask(item.id, item.title, item.isDone)}  />
                 { editingId === item.id 
                 ? (<input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />) 
-                : (<div>{item.title}</div>) 
+                : (<div className={item.isDone == true ? 'completed' : 'opened'}>{item.title}</div>) 
                 }
                 <div className="task-butts">
                     { editingId === item.id 
@@ -112,7 +136,4 @@ export default function ViewAllTasks() {
            ))}
         </div>
     </>
-
-           
-
 }

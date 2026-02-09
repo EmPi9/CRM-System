@@ -12,7 +12,7 @@ export default async function AddTask (taskTitle) {
         method: "POST", 
         headers: { "Content-Type": "application/json" }, 
           body: JSON.stringify({
-              "isDone": true,
+              "isDone": false,
               "title": taskTitle
           }) 
         })
