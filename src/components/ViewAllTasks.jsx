@@ -5,10 +5,11 @@ import AddTask from "../api/AddTask";
 import updateTask from "../api/updateTask";
 
 export default function ViewAllTasks() {
-    const [dataTasks, setDataTasks] = useState([]);
-    const [editingId, setEditingId] = useState(null);
-    const [inputValue, setInputValue] = useState('');
+    const [dataTasks, setDataTasks] = useState([])
+    const [editingId, setEditingId] = useState(null)
+    const [inputValue, setInputValue] = useState('')
     const [taskTitle, setTaskTitle] = useState('')
+    const [viewStatus, setViewStatus] = useState('all')
 
     const fetchData = async () => {
         try {
@@ -110,6 +111,30 @@ export default function ViewAllTasks() {
         } 
     }
 
+    const countTask = (typeTask) => {
+        if(typeTask == 'all'){
+            return dataTasks.length
+        } else if (typeTask == 'inWork')  {
+            return dataTasks.filter(item => (item.isDone == false)).length
+        } else if (typeTask == 'completed')  {
+            return dataTasks.filter(item => (item.isDone == true)).length
+        }
+    }   
+
+    const filteredTask = dataTasks.filter(item => {
+        if(viewStatus == 'all'){
+            return true;
+        } else if(viewStatus == 'inWork') {
+            return item.isDone == false
+        } else if (viewStatus == 'completed'){
+            return item.isDone == true
+        } else {
+            return true
+        }
+    }
+
+    )
+
     return <>
         <div className="container">
             <input type="text" onChange={handleInputChange} value={taskTitle} placeholder="Задача" />
@@ -117,23 +142,32 @@ export default function ViewAllTasks() {
         </div>
 
         <div className="container">
-           {dataTasks.map(item => (
-            <div key={item.id} className="task">
-                <input type="checkbox" className="round-checkbox" checked={item.isDone} onChange={() => completeTask(item.id, item.title, item.isDone)}  />
-                { editingId === item.id 
-                ? (<input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />) 
-                : (<div className={item.isDone == true ? 'completed' : 'opened'}>{item.title}</div>) 
-                }
-                <div className="task-butts">
+            <button className={viewStatus == 'all' ? "butt_status active" : "butt_status"} onClick={() => setViewStatus('all')}>Все ({countTask('all')})</button>
+            <button className={viewStatus == 'inWork' ? "butt_status active" : "butt_status"} onClick={() => setViewStatus('inWork')}>В работе ({countTask('inWork')})</button>
+            <button className={viewStatus == 'completed' ? "butt_status active" : "butt_status"} onClick={() => setViewStatus('completed')}>Сделано ({countTask('completed')})</button>
+        </div>
+
+        <div className="container">
+           {filteredTask.map(item => {
+            if(viewStatus) {
+                return <>
+                 <div key={item.id} className="task">
+                    <input type="checkbox" className="round-checkbox" checked={item.isDone} onChange={() => completeTask(item.id, item.title, item.isDone)}  />
                     { editingId === item.id 
-                    ? ( <><button className="butt" onClick={() => saveEditings(item.id)}>Сохранить</button> 
-                        <button className="butt red" onClick={() => setEditingId(null)}>Отмена</button> </>)
-                    : (<><button className="icon" onClick={() => startEditing(item.id, item.title)}><img src={iconEdit} alt="edit" /></button>
-                        <button className="icon" onClick={() => handleDeleate(item.id)}><img src={iconTrash} alt="trash" /></button> </>) 
+                    ? (<input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />) 
+                    : (<div className={item.isDone == true ? 'completed' : 'opened'}>{item.title}</div>) 
                     }
-                </div> 
-            </div>
-           ))}
+                    <div className="task-butts">
+                        { editingId === item.id 
+                        ? ( <><button className="butt" onClick={() => saveEditings(item.id)}>Сохранить</button> 
+                            <button className="butt red" onClick={() => setEditingId(null)}>Отмена</button> </>)
+                        : (<><button className="icon" onClick={() => startEditing(item.id, item.title)}><img src={iconEdit} alt="edit" /></button>
+                            <button className="icon" onClick={() => handleDeleate(item.id)}><img src={iconTrash} alt="trash" /></button> </>) 
+                        }
+                    </div> 
+                </div>
+            </>
+            }})}
         </div>
     </>
 }
