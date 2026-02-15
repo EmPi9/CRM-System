@@ -57,13 +57,22 @@ export default function ViewAllTasks() {
     }
 
     const saveEditings = async (taskId) =>  {
+        const spaces = checkSpaces(inputValue);
 
+        if(!spaces){
+            alert("Ошибка валидации. Введите пожалуйста название задачи заново.");
+            return
+        }
         if (inputValue.length <= 2) {
             alert("Минимальная длина текста 2 символа");
             return
         } else if (inputValue.length > 64) {
             alert("Максимальная длина текста 64 символа");
             return
+        }
+
+        function checkSpaces(str) {
+            return str.trim() !== '';
         }
 
         try {
