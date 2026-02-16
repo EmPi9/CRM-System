@@ -1,6 +1,6 @@
-export default async function updateTask() {
+export default async function updateTask(status) {
     try {
-        const response = await fetch('https://easydev.club/api/v1/todos', {
+        const response = await fetch(`https://easydev.club/api/v1/todos?filter=${status}`, {
             method: "GET", 
             })
         const result = await response.json()

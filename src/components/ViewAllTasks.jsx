@@ -10,12 +10,20 @@ export default function ViewAllTasks() {
     const [inputValue, setInputValue] = useState('')
     const [taskTitle, setTaskTitle] = useState('')
     const [viewStatus, setViewStatus] = useState('all')
+    const [counts, setCounts] = useState([]);
 
-    const fetchData = async () => {
+    const fetchData = async (viewStatus) => {
         try {
-            const data = await updateTask();
+            const data = await updateTask(viewStatus);
+            const tasksCount = await updateTask();
+            
+            setCounts([
+                tasksCount.length,
+                tasksCount.filter(task => !task.isDone).length,
+                tasksCount.filter(task => task.isDone).length
+              ]);
+            
             setDataTasks(data);
-            console.log(data);
         } catch (err) {
             console.log('ошибка')
         }
@@ -28,15 +36,15 @@ export default function ViewAllTasks() {
     const handleSubmit = async () => {
         try {
             const data = await AddTask(taskTitle);
-            await fetchData();
+            await fetchData(viewStatus);
             setTaskTitle('');
         } catch {
-
+            console.log(data)
         }
     }
 
     useEffect(() => {
-        fetchData();
+        fetchData(viewStatus);
     }, [])
 
     const handleDeleate = async (taskId) =>  {
@@ -88,7 +96,7 @@ export default function ViewAllTasks() {
             })
 
             if(response.ok) {
-                fetchData()
+                fetchData(viewStatus)
             }
 
         } catch {
@@ -112,7 +120,7 @@ export default function ViewAllTasks() {
             })
 
             if(response.ok) {
-                fetchData()
+                fetchData(viewStatus)
             }
 
         } catch (error) {
@@ -120,29 +128,10 @@ export default function ViewAllTasks() {
         } 
     }
 
-    const countTask = (typeTask) => {
-        if(typeTask == 'all'){
-            return dataTasks.length
-        } else if (typeTask == 'inWork')  {
-            return dataTasks.filter(item => (item.isDone == false)).length
-        } else if (typeTask == 'completed')  {
-            return dataTasks.filter(item => (item.isDone == true)).length
-        }
-    }   
-
-    const filteredTask = dataTasks.filter(item => {
-        if(viewStatus == 'all'){
-            return true;
-        } else if(viewStatus == 'inWork') {
-            return item.isDone == false
-        } else if (viewStatus == 'completed'){
-            return item.isDone == true
-        } else {
-            return true
-        }
+    const updateTasks = (viewStatus) => {
+        setViewStatus(viewStatus)
+        fetchData(viewStatus);
     }
-
-    )
 
     return <>
         <div className="container">
@@ -151,13 +140,13 @@ export default function ViewAllTasks() {
         </div>
 
         <div className="container">
-            <button className={viewStatus == 'all' ? "butt_status active" : "butt_status"} onClick={() => setViewStatus('all')}>Все ({countTask('all')})</button>
-            <button className={viewStatus == 'inWork' ? "butt_status active" : "butt_status"} onClick={() => setViewStatus('inWork')}>В работе ({countTask('inWork')})</button>
-            <button className={viewStatus == 'completed' ? "butt_status active" : "butt_status"} onClick={() => setViewStatus('completed')}>Сделано ({countTask('completed')})</button>
+            <button className={viewStatus == 'all' ? "butt_status active" : "butt_status"} onClick={() => updateTasks('all')}>Все ({counts[0]})</button>
+            <button className={viewStatus == 'inWork' ? "butt_status active" : "butt_status"} onClick={() => updateTasks('inWork')}>В работе ({counts[1]})</button>
+            <button className={viewStatus == 'completed' ? "butt_status active" : "butt_status"} onClick={() => updateTasks('completed')}>Сделано ({counts[2]})</button>
         </div>
 
         <div className="container">
-           {filteredTask.map(item => {
+           {dataTasks.map(item => {
             if(viewStatus) {
                 return <>
                  <div key={item.id} className="task">
