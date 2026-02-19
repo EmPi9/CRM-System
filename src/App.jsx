@@ -1,10 +1,10 @@
-import ViewAllTasks from "./components/ViewAllTasks"
+import TodoListPage from './pages/TodoListPage'
 
 function App() {
 
   return (
     <>
-      <ViewAllTasks />
+      <TodoListPage />
     </>
   )
 }

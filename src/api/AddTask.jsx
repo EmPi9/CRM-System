@@ -1,19 +1,10 @@
-export default async function AddTask (taskTitle) {
-    const spaces = checkSpaces(taskTitle);
-    if(!spaces){
-        alert("Ошибка валидации. Введите пожалуйста название задачи заново.");
-        return
-    }
-    if (taskTitle.length <= 2) {
-        alert("Минимальная длина текста 2 символа");
-        return
-    } else if (taskTitle.length > 64) {
-        alert("Максимальная длина текста 64 символа");
-        return
-    }
+import ValidateInput from '../helpers/validateInput'
 
-    function checkSpaces(str) {
-        return str.trim() !== '';
+export default async function addTask (taskTitle) {
+    const validate = ValidateInput(taskTitle);
+     
+    if(validate == false){
+        return
     }
 
     try {
