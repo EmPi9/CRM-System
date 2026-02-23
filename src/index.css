@@ -1,3 +1,5 @@
+@import './ui/variables.css';
+
 .container {
     text-align: center;
 }
@@ -8,18 +10,14 @@
     margin-right: 15px;
 }
 
-.butt {
-    background-color: #5292FE;
+.button {
+    background-color: var(--primary);
     color: #FFF;
     padding: 10px 30px;
     border: 0;
     border-radius: 5px;
     cursor: pointer;
 }
-
-.butt.red {
-    background-color: #FF6559 !important;
-} 
 
 .task {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -38,36 +36,36 @@
     gap: 10px;
 }
 
+.icon.trash {
+    background-color: var(--dangerous);
+}
+
 .icon {
-    background-color: #5292FE;
+    background-color: var(--primary);
     padding: 5px;
     border-radius: 5px;
     cursor: pointer;
     border: 0;
 }
 
-.icon:last-child{
-    background-color: #FF6559;
-}
-
 .icon img {
     width: 15px;
 }
 
-.round-checkbox {
+.task .round-checkbox {
   width: 20px;
-  height: 20px !important;
+  height: 20px ;
   border-radius: 50%;
   appearance: none; 
   -webkit-appearance: none;
-  border: 2px solid #7a7a7a !important; 
+  border: 2px solid #7a7a7a ; 
   cursor: pointer;
   outline: none;
 }
 
 .round-checkbox:checked {
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: var(--primary);
+  border-color: var(--primary);
   position: relative;
 }
 
@@ -86,7 +84,7 @@
     text-decoration: line-through;
 }
 
-.butt_status {
+.button_status {
     -webkit-appearance: none;
     border: none;
     background-color: transparent;
@@ -97,8 +95,8 @@
     font-weight: bold;
 }
 
-.butt_status.active {
-    color: #5292FE;
-    border-bottom: 2px solid #007bff;
+.button_status.active {
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
 }
 

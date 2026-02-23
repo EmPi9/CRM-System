@@ -1,41 +1,33 @@
 import { useEffect, useState } from "react";
-import updateTask from "../api/updateTask"
+import { getTodos } from '../api/todos'
 import AddTask from "../components/AddTask";
 import FilterTask from "../components/FilterTask";
 import ListTasks from "../components/ListTasks";
 
 export default function TodoListPage() {
-    const [dataTasks, setDataTasks] = useState([])
-    const [taskTitle, setTaskTitle] = useState('')
-    const [viewStatus, setViewStatus] = useState('all')
-    const [counts, setCounts] = useState([]);
+    const [todos, setTodos] = useState({
+        data: [],
+        info: { all: 0, completed: 0, inWork: 0 },
+        meta: { totalAmount: 0 } })
+    const [filter, setFilter] = useState('all')
 
-    const fetchData = async (viewStatus) => {
+    const fetchData = async () => {
         try {
-            const data = await updateTask(viewStatus);
-            const tasksCount = await updateTask();
-            
-            setCounts([
-                tasksCount.length,
-                tasksCount.filter(task => !task.isDone).length,
-                tasksCount.filter(task => task.isDone).length
-              ]);
-            
-            setDataTasks(data);
-        } catch (err) {
-            console.log('ошибка обновления')
+            const data = await getTodos(filter);
+            setTodos(data);
+        } catch {
+            alert('Ошибка работы сервера.')              
         }
     }
 
     useEffect(() => {
-        fetchData(viewStatus);
-    }, [])
+        fetchData(filter);
+    }, [filter])
 
 
     return <>
-        <AddTask taskTitle={taskTitle} setTaskTitle={setTaskTitle} fetchData={fetchData} viewStatus={viewStatus} />
-        <FilterTask viewStatus={viewStatus} counts={counts} fetchData={fetchData} setViewStatus={setViewStatus} />
-        <ListTasks fetchData={fetchData} dataTasks={dataTasks} viewStatus={viewStatus}  />
-
+        <AddTask fetchData={fetchData} />
+        <FilterTask filter={filter} todos={todos} setFilter={setFilter} />
+        <ListTasks fetchData={fetchData} todos={todos}  />
     </>
 }

@@ -1,16 +1,16 @@
-export default function FilterTask({ viewStatus, counts, fetchData, setViewStatus }) {
+import Tab from "../ui/Tab";
 
-    
-    const updateTasks = (viewStatus) => {
-        setViewStatus(viewStatus)
-        fetchData(viewStatus);
+export default function FilterTask({ filter, todos, setFilter }) {
+
+    const handleChangeFilter = async (filter) => {
+        await setFilter(filter);
     }
 
-    return <>
+    return (
         <div className="container">
-            <button className={viewStatus == 'all' ? "butt_status active" : "butt_status"} onClick={() => updateTasks('all')}>Все ({counts[0]})</button>
-            <button className={viewStatus == 'inWork' ? "butt_status active" : "butt_status"} onClick={() => updateTasks('inWork')}>В работе ({counts[1]})</button>
-            <button className={viewStatus == 'completed' ? "butt_status active" : "butt_status"} onClick={() => updateTasks('completed')}>Сделано ({counts[2]})</button>
+            <Tab className={`button_status ${filter === 'all' ? 'active' : ''}`} onClick={() => handleChangeFilter('all')}>Все ({todos.info.all})</Tab>
+            <Tab className={`button_status ${filter === 'inWork' ? 'active' : ''}`} onClick={() => handleChangeFilter('inWork')}>В работе ({todos.info.inWork})</Tab>
+            <Tab className={`button_status ${filter === 'completed' ? 'active' : ''}`} onClick={() => handleChangeFilter('completed')}>Сделано ({todos.info.completed})</Tab>
         </div> 
-    </>;
+    )
 }
