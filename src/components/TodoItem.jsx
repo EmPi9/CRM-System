@@ -32,8 +32,7 @@ export default function TodoItem({ fetchData, item }) {
 
     const handleSaveEditings = async (taskId, taskDone) =>  {
         const validate = validateInput(inputValue);
-        const data = await editTask(taskId, inputValue, taskDone);
-        
+
         if(validate === 'spaces'){
             alert("Ошибка валидации. Введите пожалуйста название задачи заново.");
             return 
@@ -45,6 +44,8 @@ export default function TodoItem({ fetchData, item }) {
             alert("Максимальная длина текста 64 символа");
             return 
         }
+
+        const data = await editTask(taskId, inputValue, taskDone);
 
         const check = responseToClient(data);
         if(check === false){

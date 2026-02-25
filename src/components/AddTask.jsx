@@ -17,7 +17,7 @@ export default function AddTask({ fetchData }) {
         e.preventDefault();
         try {
             const validate = validateInput(taskTitle);
-            const data = await addTask(taskTitle);
+            
      
             if(validate === 'spaces'){
                 alert("Ошибка валидации. Введите пожалуйста название задачи заново.");
@@ -31,11 +31,14 @@ export default function AddTask({ fetchData }) {
                 return 
             }
             
+            const data = await addTask(taskTitle);
+
             const check = responseToClient(data);
             if(check === false){
                 alert('Ошибка работы сервера.')
                 return
             }
+
 
             await fetchData();
             setTaskTitle('');
