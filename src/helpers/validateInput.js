@@ -6,7 +6,7 @@ export default function validateInput(inputValue) {
     }
     if (inputValue.length <= 2) {
         return '<2'
-    } else if (inputValue.length > 64) {
+    } else if (inputValue.length >= 64) {
         return '>64'
     }
 
