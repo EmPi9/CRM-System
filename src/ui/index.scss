@@ -1,0 +1,34 @@
+@import './variables.scss';
+
+.container {
+    text-align: center;
+}
+.container input {
+    height: 25px;
+    border: 0 solid #000;
+    border-bottom: 1px solid #DADDE2;
+    margin-right: 15px;
+}
+
+.task {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin: 10px;
+    border-radius: 5px;
+    text-align-last: left;
+    padding: 15px;
+    margin: 10px auto;
+    width: 500px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.task-butts {
+    display: flex;
+    gap: 10px;
+}
+
+.completed {
+    color: #5a5a5a;
+    text-decoration: line-through;
+}
+
