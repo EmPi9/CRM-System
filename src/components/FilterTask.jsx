@@ -1,4 +1,4 @@
-import Tab from "../ui/Tab";
+import Tab from "../ui/Tab/Tab";
 
 export default function FilterTask({ filter, todos, setFilter }) {
 
@@ -8,9 +8,9 @@ export default function FilterTask({ filter, todos, setFilter }) {
 
     return (
         <div className="container">
-            <Tab className={`button_status ${filter === 'all' ? 'active' : ''}`} onClick={() => handleChangeFilter('all')}>Все ({todos.info.all})</Tab>
-            <Tab className={`button_status ${filter === 'inWork' ? 'active' : ''}`} onClick={() => handleChangeFilter('inWork')}>В работе ({todos.info.inWork})</Tab>
-            <Tab className={`button_status ${filter === 'completed' ? 'active' : ''}`} onClick={() => handleChangeFilter('completed')}>Сделано ({todos.info.completed})</Tab>
+            <Tab active={`${filter === 'all' ? 'active' : ''}`} onClick={() => handleChangeFilter('all')}>Все ({todos.info.all})</Tab>
+            <Tab active={`${filter === 'inWork' ? 'active' : ''}`} onClick={() => handleChangeFilter('inWork')}>В работе ({todos.info.inWork})</Tab>
+            <Tab active={`${filter === 'completed' ? 'active' : ''}`}  onClick={() => handleChangeFilter('completed')}>Сделано ({todos.info.completed})</Tab>
         </div> 
     )
 }

@@ -11,9 +11,15 @@ export async function addTask (title) {
           }) 
         })
 
-        const data = await response.json();
-        return data;
-    } catch {
+        if(response.ok){
+            const data = await response.json();
+            return data;
+        } else {
+            throw new Error(response.status);
+        }     
+
+    } catch (error) {
+        console.error(error);
         return false
     }
 }
@@ -23,7 +29,15 @@ export async function deleateTask(taskId) {
         const response = await fetch(`${API_URL}/todos/${taskId}`, {
         method: "DELETE", 
         })
+
+        if(response.ok){
+            return
+        } else {
+            throw new Error(response.status);
+        }
+
     } catch {
+        console.error(error);
         return false
     }
 }
@@ -40,7 +54,15 @@ export async function editTask(taskId, title, isDone) {
             isDone: isDone,
             })
         })
+
+        if(response.ok){
+            return
+        } else {
+            throw new Error(response.status);
+        }
+
     } catch {
+        console.error(error);
         return false
     }
 }
@@ -50,14 +72,17 @@ export async function getTodos(filter) {
         const response = await fetch(`${API_URL}/todos?filter=${filter}`, {
             method: "GET", 
             })
-        const result = await response.json()
+        
 
         if(response.ok){
-            return result
-        }
-
-        return [];
+            const data = await response.json();
+            return data;
+        } else {
+            throw new Error(response.status);
+        } 
+        
     } catch {
+        console.error(error);
         return false
     }
 } 

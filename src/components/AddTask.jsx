@@ -2,8 +2,8 @@ import { useState } from "react"
 import { addTask } from '../api/todos'
 import validateInput from '../helpers/validateInput'
 import responseToClient from '../helpers/responseToClient'
-import Button from "../ui/Button"
-import Input from "../ui/Input"
+import Button from "../ui/Button/Button"
+import Input from "../ui/Input/Input"
 
 
 export default function AddTask({ fetchData }) {
@@ -52,7 +52,7 @@ export default function AddTask({ fetchData }) {
         <form onSubmit={handleSubmit}>
             <div className="container">
                 <Input onChange={handleInputChange} value={taskTitle} placeholder="Задача" />
-                <Button type="submit" className="button">Создать</Button>
+                <Button type="submit">Создать</Button>
             </div>
         </form>
     )

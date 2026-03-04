@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { deleateTask, editTask } from '../api/todos'
-import CheckBox from '../ui/CheckBox'
-import IconButton from '../ui/IconButton'
+import CheckBox from '../ui/CheckBox/CheckBox'
+import IconButton from '../ui/IconButton/IconButton'
 import iconEdit from "../assets/icons/fi-rr-edit.svg"
 import iconTrash from "../assets/icons/fi-rs-trash.svg"
 import iconAdd from '../assets/icons/fi-rr-add.svg'
@@ -11,7 +11,7 @@ import responseToClient from '../helpers/responseToClient'
 
 
 export default function TodoItem({ fetchData, item }) {
-    const [editingId, setEditingId] = useState(null)
+    const [editing, setEditing] = useState(false)
     const [inputValue, setInputValue] = useState('')
 
     const handleDeleate = async (taskId) =>  {
@@ -25,8 +25,8 @@ export default function TodoItem({ fetchData, item }) {
         await fetchData();
     }
     
-    const handleStartEditing = (id, title) => {
-        setEditingId(id);
+    const handleStartEditing = (title) => {
+        setEditing(true);
         setInputValue(title);
     }
 
@@ -53,7 +53,7 @@ export default function TodoItem({ fetchData, item }) {
             return
         }
         await fetchData();
-        setEditingId(null)
+        setEditing(false)
     }
 
     const handleCompleteTask = async (taskId, taskTitle, taskDone) => {
@@ -70,17 +70,17 @@ export default function TodoItem({ fetchData, item }) {
 
     return (
         <div key={item.id} className="task">
-            <CheckBox type="checkbox" className="round-checkbox" checked={item.isDone} onChange={() => handleCompleteTask(item.id, item.title, item.isDone)}  />
-            { editingId === item.id 
+            <CheckBox type="checkbox" checked={item.isDone} onChange={() => handleCompleteTask(item.id, item.title, item.isDone)}  />
+            { editing === true 
             ? (<input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />) 
             : (<div className={item.isDone == true ? 'completed' : 'opened'}>{item.title}</div>) 
             }
             <div className="task-butts">
-                { editingId === item.id 
+                { editing === true 
                 ? ( <><IconButton onClick={() => handleSaveEditings(item.id, item.isDone)} icon={iconAdd} />
-                <IconButton onClick={() => setEditingId(null)} icon={iconCross} /> </>)
-                : (<><IconButton onClick={() => handleStartEditing(item.id, item.title)} icon={iconEdit} />
-                    <IconButton className='trash' onClick={() => handleDeleate(item.id)} icon={iconTrash}  /> </>) 
+                <IconButton onClick={() => setEditing(false)} icon={iconCross} /> </>)
+                : (<><IconButton onClick={() => handleStartEditing(item.title)} icon={iconEdit} />
+                    <IconButton color="danger" onClick={() => handleDeleate(item.id)} icon={iconTrash}  /> </>) 
                 }
             </div> 
         </div> 
