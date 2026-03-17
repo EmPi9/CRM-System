@@ -1,19 +1,20 @@
 import { useState } from "react" 
 import { addTask } from '../api/todos'
+import { FetchDataProps } from '../types/components.types';
 import validateInput from '../helpers/validateInput'
 import responseToClient from '../helpers/responseToClient'
 import Button from "../ui/Button/Button"
 import Input from "../ui/Input/Input"
 
 
-export default function AddTask({ fetchData }) {
+export default function AddTask({ fetchData }: FetchDataProps) {
     const [taskTitle, setTaskTitle] = useState('')
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTaskTitle(e.target.value)
     }
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             const validate = validateInput(taskTitle);

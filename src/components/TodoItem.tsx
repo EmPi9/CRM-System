@@ -8,13 +8,14 @@ import iconAdd from '../assets/icons/fi-rr-add.svg'
 import iconCross from '../assets/icons/fi-rr-cross.svg'
 import validateInput from "../helpers/validateInput";
 import responseToClient from '../helpers/responseToClient'
+import { TodoItemProps } from "../../src/types/components.types"
 
 
-export default function TodoItem({ fetchData, item }) {
+export default function TodoItem({ fetchData, item }: TodoItemProps) {
     const [editing, setEditing] = useState(false)
     const [inputValue, setInputValue] = useState('')
 
-    const handleDeleate = async (taskId) =>  {
+    const handleDeleate = async (taskId: number) =>  {
         const data = await deleateTask(taskId);
 
         const check = responseToClient(data);
@@ -22,15 +23,16 @@ export default function TodoItem({ fetchData, item }) {
             alert('Ошибка работы сервера.')
             return
         }
-        await fetchData();
+
+        fetchData();
     }
     
-    const handleStartEditing = (title) => {
+    const handleStartEditing = (title: string) => {
         setEditing(true);
         setInputValue(title);
     }
 
-    const handleSaveEditings = async (taskId, taskDone) =>  {
+    const handleSaveEditings = async (taskId: number, taskDone: boolean) =>  {
         const validate = validateInput(inputValue);
 
         if(validate === 'spaces'){
@@ -56,7 +58,7 @@ export default function TodoItem({ fetchData, item }) {
         setEditing(false)
     }
 
-    const handleCompleteTask = async (taskId, taskTitle, taskDone) => {
+    const handleCompleteTask = async (taskId: number, taskTitle: string, taskDone: boolean) => {
         taskDone = !taskDone
         const data = await editTask(taskId, taskTitle, taskDone);
 
@@ -70,7 +72,7 @@ export default function TodoItem({ fetchData, item }) {
 
     return (
         <div key={item.id} className="task">
-            <CheckBox type="checkbox" checked={item.isDone} onChange={() => handleCompleteTask(item.id, item.title, item.isDone)}  />
+            <CheckBox checked={item.isDone} onChange={() => handleCompleteTask(item.id, item.title, item.isDone)}  />
             { editing === true 
             ? (<input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />) 
             : (<div className={item.isDone == true ? 'completed' : 'opened'}>{item.title}</div>) 

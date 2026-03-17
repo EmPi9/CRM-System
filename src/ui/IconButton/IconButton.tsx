@@ -1,4 +1,5 @@
 import styles from './IconButton.module.scss';
+import { IconButtonProps } from '../../types/components.types'
 
 export default function IconButton({
     onClick, 
@@ -6,7 +7,7 @@ export default function IconButton({
     icon, 
     size = 'small', 
     color = 'primary',  
-}) {
+}: IconButtonProps) {
     return (
         <button
             type={type}

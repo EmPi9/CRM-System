@@ -1,11 +1,12 @@
 import styles from './Tab.module.scss';
+import { TabProps } from '../../types/components.types'
 
 export default function Tab({ 
     onClick, 
     color = 'primary',  
     active = ' ', 
     children 
-}) {
+}: TabProps) {
 
     return (
          <button

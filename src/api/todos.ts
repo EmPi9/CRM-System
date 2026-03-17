@@ -1,9 +1,9 @@
 const API_URL = 'https://easydev.club/api/v1'
-import { CreateTask, Task, ApiResult } from '../types/api.types';
+import { RequestBody, ResponseTodo } from '../types/api.types';
 
-export async function addTask (title: string) {
+export async function addTask(title: string) {
     try {
-        const payload: CreateTask = {
+        const payload: RequestBody = {
             title,
             isDone: false
         };
@@ -15,10 +15,10 @@ export async function addTask (title: string) {
         })
 
         if(response.ok){
-            const data = await response.json();
+            const data: ResponseTodo = await response.json();
             return data;
         } else {
-            throw new Error(response.status);
+            throw new Error(`HTTP error ${response.status}`);
         }     
 
     } catch (error) {
@@ -27,65 +27,64 @@ export async function addTask (title: string) {
     }
 }
 
-// export async function deleateTask(taskId) {
-//     try {
-//         const response = await fetch(`${API_URL}/todos/${taskId}`, {
-//         method: "DELETE", 
-//         })
+export async function deleateTask(taskId: number) {
+    try {
+        const response = await fetch(`${API_URL}/todos/${taskId}`, {
+        method: "DELETE", 
+        })
 
-//         if(response.ok){
-//             return
-//         } else {
-//             throw new Error(response.status);
-//         }
+        if(response.ok){
+            return
+        } else {
+            throw new Error(`HTTP error ${response.status}`);
+        }
 
-//     } catch {
-//         console.error(error);
-//         return false
-//     }
-// }
+    } catch (error) {
+        console.error(error);
+        return false
+    }
+}
 
-// export async function editTask(taskId, title, isDone) {
-//     try {
-//         const response = await fetch(`${API_URL}/todos/${taskId}`, {
-//         method: "PUT",
-//         headers: {
-//           'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//             title: title,
-//             isDone: isDone,
-//             })
-//         })
+export async function editTask(taskId: number, title: string, isDone: boolean) {
+    try {
+        const response = await fetch(`${API_URL}/todos/${taskId}`, {
+        method: "PUT",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: title,
+            isDone: isDone,
+            })
+        })
 
-//         if(response.ok){
-//             return
-//         } else {
-//             throw new Error(response.status);
-//         }
+        if(response.ok){
+            return
+        } else {
+            throw new Error(`HTTP error ${response.status}`);
+        }
 
-//     } catch {
-//         console.error(error);
-//         return false
-//     }
-// }
+    } catch (error) {
+        console.error(error);
+        return false
+    }
+}
 
-// export async function getTodos(filter) {
-//     try {
-//         const response = await fetch(`${API_URL}/todos?filter=${filter}`, {
-//             method: "GET", 
-//             })
+export async function getTodos(filter: string) {
+    try {
+        const response = await fetch(`${API_URL}/todos?filter=${filter}`, {
+            method: "GET", 
+            })
         
-
-//         if(response.ok){
-//             const data = await response.json();
-//             return data;
-//         } else {
-//             throw new Error(response.status);
-//         } 
+        if(response.ok){
+            const data = await response.json();
+            return data;
+        } else {
+            throw new Error(`HTTP error ${response.status}`);
+        } 
         
-//     } catch {
-//         console.error(error);
-//         return false
-//     }
-// } 
+    } catch (error) {
+        console.error(error);
+        return false
+    }
+} 
