@@ -1,5 +1,13 @@
 import styles from './IconButton.module.scss';
-import { IconButtonProps } from '../../types/components.types'
+import { Size, Color } from '../../types/components.types'
+
+export interface IconButtonProps {
+    onClick: React.MouseEventHandler<HTMLButtonElement>, 
+    type?: "submit" | "reset" | "button", 
+    icon: string, 
+    size?: Size, 
+    color?: Color,  
+}
 
 export default function IconButton({
     onClick, 

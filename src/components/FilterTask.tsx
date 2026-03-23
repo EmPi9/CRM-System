@@ -1,10 +1,16 @@
 import Tab from "../ui/Tab/Tab";
-import { FilterTaskProps, FilterProps } from '../types/components.types'
+import { Dispatch, SetStateAction } from "react";
+import { Todos, Todo, TodoInfo, FilterProps } from '../types/components.types'
+export interface FilterTaskProps {
+    filter: FilterProps, 
+    todos: Todos<Todo, TodoInfo>, 
+    setFilter: Dispatch<SetStateAction<FilterProps>>,
+}
 
 
 export default function FilterTask({ filter, todos, setFilter }: FilterTaskProps) {
 
-    const handleChangeFilter = async (filter: FilterProps) => {
+    const handleChangeFilter = (filter: FilterProps) => {
         setFilter(filter);
     }
 

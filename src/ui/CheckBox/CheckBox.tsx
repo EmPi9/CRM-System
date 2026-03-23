@@ -1,5 +1,11 @@
 import styles from './CheckBox.module.scss';
-import { CheckBoxProps } from '../../types/components.types'
+import { Color } from '../../types/components.types'
+
+export interface CheckBoxProps {
+    onChange?: React.ChangeEventHandler<HTMLInputElement>, 
+    color?: Color,  
+    checked: boolean 
+}
 
 export default function CheckBox({ 
     onChange, 

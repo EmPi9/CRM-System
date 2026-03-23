@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { deleateTask, editTask } from '../api/todos'
+import { deleteTask, editTask } from '../api/todos'
 import CheckBox from '../ui/CheckBox/CheckBox'
 import IconButton from '../ui/IconButton/IconButton'
 import iconEdit from "../assets/icons/fi-rr-edit.svg"
@@ -7,21 +7,23 @@ import iconTrash from "../assets/icons/fi-rs-trash.svg"
 import iconAdd from '../assets/icons/fi-rr-add.svg'
 import iconCross from '../assets/icons/fi-rr-cross.svg'
 import validateInput from "../helpers/validateInput";
-import responseToClient from '../helpers/responseToClient'
-import { TodoItemProps } from "../../src/types/components.types"
+import { FetchDataProp, Todo } from "../../src/types/components.types"
 
+export interface TodoItemProps {
+     fetchData: FetchDataProp,
+     item: Todo
+}
 
 export default function TodoItem({ fetchData, item }: TodoItemProps) {
-    const [editing, setEditing] = useState(false)
-    const [inputValue, setInputValue] = useState('')
+    const [editing, setEditing] = useState<boolean>(false)
+    const [inputValue, setInputValue] = useState<string>('')
 
-    const handleDeleate = async (taskId: number) =>  {
-        const data = await deleateTask(taskId);
-
-        const check = responseToClient(data);
-        if(check === false){
+    const handleDelete = async (taskId: number) =>  {
+        try {
+            await deleteTask(taskId);
+        } catch(error) {
             alert('Ошибка работы сервера.')
-            return
+            return            
         }
 
         fetchData();
@@ -47,12 +49,11 @@ export default function TodoItem({ fetchData, item }: TodoItemProps) {
             return 
         }
 
-        const data = await editTask(taskId, inputValue, taskDone);
-
-        const check = responseToClient(data);
-        if(check === false){
+        try {
+            await editTask(taskId, inputValue, taskDone);
+        } catch(error) {
             alert('Ошибка работы сервера.')
-            return
+            return            
         }
         await fetchData();
         setEditing(false)
@@ -60,12 +61,12 @@ export default function TodoItem({ fetchData, item }: TodoItemProps) {
 
     const handleCompleteTask = async (taskId: number, taskTitle: string, taskDone: boolean) => {
         taskDone = !taskDone
-        const data = await editTask(taskId, taskTitle, taskDone);
 
-        const check = responseToClient(data);
-        if(check === false){
+        try {
+            await editTask(taskId, taskTitle, taskDone);
+        } catch(error) {
             alert('Ошибка работы сервера.')
-            return
+            return            
         }
         await fetchData();
     }
@@ -82,7 +83,7 @@ export default function TodoItem({ fetchData, item }: TodoItemProps) {
                 ? ( <><IconButton onClick={() => handleSaveEditings(item.id, item.isDone)} icon={iconAdd} />
                 <IconButton onClick={() => setEditing(false)} icon={iconCross} /> </>)
                 : (<><IconButton onClick={() => handleStartEditing(item.title)} icon={iconEdit} />
-                    <IconButton color="danger" onClick={() => handleDeleate(item.id)} icon={iconTrash}  /> </>) 
+                    <IconButton color="danger" onClick={() => handleDelete(item.id)} icon={iconTrash}  /> </>) 
                 }
             </div> 
         </div> 

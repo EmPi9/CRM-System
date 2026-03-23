@@ -3,10 +3,10 @@ import { getTodos } from '../api/todos'
 import AddTask from "../components/AddTask";
 import FilterTask from "../components/FilterTask";
 import ListTasks from "../components/ListTasks";
-import { Todos, FilterProps } from "../../src/types/components.types"
+import { Todos, FilterProps, Todo, TodoInfo } from "../../src/types/components.types"
 
 export default function TodoListPage() {
-    const [todos, setTodos] = useState<Todos>({
+    const [todos, setTodos] = useState<Todos<Todo, TodoInfo>>({
         data: [],
         info: { all: 0, completed: 0, inWork: 0 },
         meta: { totalAmount: 0 } })
@@ -16,7 +16,7 @@ export default function TodoListPage() {
         try {
             const data = await getTodos(filter);
             setTodos(data);
-        } catch {
+        } catch(error) {
             alert('Ошибка работы сервера.')              
         }
     }

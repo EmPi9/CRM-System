@@ -1,5 +1,10 @@
 import TodoItem from "./TodoItem"
-import { ListTaskProps } from "../../src/types/components.types"
+import { FetchDataProp, Todo, Todos, TodoInfo } from "../../src/types/components.types"
+
+export interface ListTaskProps {
+    fetchData: FetchDataProp, 
+    todos: Todos<Todo, TodoInfo>
+}
 
 export default function ListTasks({ fetchData, todos }: ListTaskProps) {
     return (

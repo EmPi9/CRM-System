@@ -1,4 +1,8 @@
-import { InputProps } from '../../types/components.types'
+export interface InputProps {
+    onChange?: React.ChangeEventHandler<HTMLInputElement>;
+    value: string;
+    placeholder?: string;
+}
 
 export default function CheckBox({ onChange, value, placeholder  }: InputProps ) {
 

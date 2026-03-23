@@ -1,14 +1,15 @@
 import { useState } from "react" 
 import { addTask } from '../api/todos'
-import { FetchDataProps } from '../types/components.types';
 import validateInput from '../helpers/validateInput'
-import responseToClient from '../helpers/responseToClient'
 import Button from "../ui/Button/Button"
 import Input from "../ui/Input/Input"
 
+export interface FetchDataProps {
+    fetchData: () => Promise<void>;
+}
 
 export default function AddTask({ fetchData }: FetchDataProps) {
-    const [taskTitle, setTaskTitle] = useState('')
+    const [taskTitle, setTaskTitle] = useState<string>('')
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTaskTitle(e.target.value)
@@ -18,7 +19,6 @@ export default function AddTask({ fetchData }: FetchDataProps) {
         e.preventDefault();
         try {
             const validate = validateInput(taskTitle);
-            
      
             if(validate === 'spaces'){
                 alert("Ошибка валидации. Введите пожалуйста название задачи заново.");
@@ -31,15 +31,13 @@ export default function AddTask({ fetchData }: FetchDataProps) {
                 alert("Максимальная длина текста 64 символа");
                 return 
             }
-            
-            const data = await addTask(taskTitle);
 
-            const check = responseToClient(data);
-            if(check === false){
+            try {
+                await addTask(taskTitle);
+            } catch(error) {             
                 alert('Ошибка работы сервера.')
-                return
+                return          
             }
-
 
             await fetchData();
             setTaskTitle('');
