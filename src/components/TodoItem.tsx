@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { deleteTask, editTask } from '../api/todos'
 import CheckBox from '../ui/CheckBox/CheckBox'
 import Button from '../ui/Button/Button'
@@ -10,10 +10,11 @@ import Typography from "antd/es/typography/Text";
 
 export interface TodoItemProps {
      fetchData: FetchDataProp,
-     item: Todo
+     item: Todo,
+     setNeedUpadete: Dispatch<SetStateAction<boolean>>, 
 }
 
-export default function TodoItem({ fetchData, item }: TodoItemProps) {
+export default function TodoItem({ fetchData, item, setNeedUpadete }: TodoItemProps) {
     const [editing, setEditing] = useState<boolean>(false)
     const [inputValue, setInputValue] = useState<string>('')
 
@@ -30,6 +31,7 @@ export default function TodoItem({ fetchData, item }: TodoItemProps) {
     
     const handleStartEditing = (title: string) => {
         setEditing(true);
+        setNeedUpadete(false);
         setInputValue(title);
     }
 
@@ -40,8 +42,8 @@ export default function TodoItem({ fetchData, item }: TodoItemProps) {
             alert('Ошибка работы сервера.')
             return            
         }
-        await fetchData();
         setEditing(false)
+        setNeedUpadete(true);
     }
 
     const handleCompleteTask = async (taskId: number, taskTitle: string, taskDone: boolean) => {

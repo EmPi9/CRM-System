@@ -13,6 +13,7 @@ export default function TodoListPage() {
         info: { all: 0, completed: 0, inWork: 0 },
         meta: { totalAmount: 0 } })
     const [filter, setFilter] = useState<FilterProps>('all')
+    const [needUpdate, setNeedUpadete] = useState<boolean>(true)
 
     const fetchData = async () => {
         try {
@@ -25,13 +26,18 @@ export default function TodoListPage() {
 
     useEffect(() => {
         fetchData();
+        if(needUpdate === true){
+            
+            var intervalId = setInterval(() => {
+              fetchData();
+            }, 5000);
 
-        const intervalId = setInterval(() => {
-          fetchData();
-        }, 5000);
+            return () => clearInterval(intervalId);
+        } else {
+            return () => clearInterval(intervalId);
+        }
 
-        return () => clearInterval(intervalId);
-    }, [filter])
+    }, [filter, needUpdate])
 
 
     return <>
@@ -39,7 +45,7 @@ export default function TodoListPage() {
             <Space orientation="vertical" size="medium" style={{ display: 'flex', alignItems: 'center' }}>
                 <AddTask fetchData={fetchData} />
                 <FilterTask filter={filter} todos={todos} setFilter={setFilter} />
-                <ListTasks fetchData={fetchData} todos={todos}  />
+                <ListTasks fetchData={fetchData} todos={todos} setNeedUpadete={setNeedUpadete}  />
             </Space>
     </>
 }
