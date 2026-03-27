@@ -1,4 +1,5 @@
-import Tab from "../ui/Tab/Tab";
+import Button from "../ui/Button/Button"
+import { Flex } from 'antd'
 import { Dispatch, SetStateAction } from "react";
 import { Todos, Todo, TodoInfo, FilterProps } from '../types/components.types'
 export interface FilterTaskProps {
@@ -15,10 +16,10 @@ export default function FilterTask({ filter, todos, setFilter }: FilterTaskProps
     }
 
     return (
-        <div className="container">
-            <Tab active={`${filter === 'all' ? 'active' : ''}`} onClick={() => handleChangeFilter('all')}>Все ({todos.info.all})</Tab>
-            <Tab active={`${filter === 'inWork' ? 'active' : ''}`} onClick={() => handleChangeFilter('inWork' )}>В работе ({todos.info.inWork})</Tab>
-            <Tab active={`${filter === 'completed' ? 'active' : ''}`}  onClick={() => handleChangeFilter('completed')}>Сделано ({todos.info.completed})</Tab>
-        </div> 
+        <Flex gap="medium" justify="center">
+            <Button color={`${filter === 'all' ? 'blue' : 'default'}`} type="text" variant="text" onClick={() => handleChangeFilter('all')}>Все ({todos.info.all})</Button>
+            <Button color={`${filter === 'inWork' ? 'blue' : 'default'}`} type="text" variant="text" onClick={() => handleChangeFilter('inWork' )}>В работе ({todos.info.inWork})</Button>
+            <Button color={`${filter === 'completed' ? 'blue' : 'default'}`} type="text" variant="text"  onClick={() => handleChangeFilter('completed')}>Сделано ({todos.info.completed})</Button>
+        </Flex> 
     )
 }

@@ -1,9 +1,20 @@
 import TodoListPage from './pages/TodoListPage'
+import ProfilePage from './pages/ProfilePage'
+import { BrowserRouter as Router, Routes, Route } from 'react-router';
+import AsideMenu from '../src/components/AsideMenu';
 
 function App() {
 
   return (
-      <TodoListPage />
+      <Router>
+      <div>
+        <AsideMenu />
+        <Routes>
+          <Route path="/" element={<TodoListPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Routes>
+      </div>
+    </Router>
   )
 }
 

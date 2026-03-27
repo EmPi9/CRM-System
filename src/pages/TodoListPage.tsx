@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { Space } from 'antd'
 import { getTodos } from '../api/todos'
 import AddTask from "../components/AddTask";
 import FilterTask from "../components/FilterTask";
 import ListTasks from "../components/ListTasks";
+import AsideMenu from "../components/AsideMenu"
 import { Todos, FilterProps, Todo, TodoInfo } from "../../src/types/components.types"
 
 export default function TodoListPage() {
@@ -23,12 +25,21 @@ export default function TodoListPage() {
 
     useEffect(() => {
         fetchData();
+
+        const intervalId = setInterval(() => {
+          fetchData();
+        }, 5000);
+
+        return () => clearInterval(intervalId);
     }, [filter])
 
 
     return <>
-        <AddTask fetchData={fetchData} />
-        <FilterTask filter={filter} todos={todos} setFilter={setFilter} />
-        <ListTasks fetchData={fetchData} todos={todos}  />
+            <AsideMenu />
+            <Space orientation="vertical" size="medium" style={{ display: 'flex', alignItems: 'center' }}>
+                <AddTask fetchData={fetchData} />
+                <FilterTask filter={filter} todos={todos} setFilter={setFilter} />
+                <ListTasks fetchData={fetchData} todos={todos}  />
+            </Space>
     </>
 }

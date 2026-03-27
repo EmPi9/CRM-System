@@ -1,28 +1,42 @@
-import styles from './Button.module.scss';
-import { Size, Color } from '../../types/components.types';
+import { Size, Color, Type, Variant } from '../../types/components.types';
+import { Button } from 'antd';
+
 export interface ButtonProps {
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
-    size?: Size; 
-    color?: Color; 
-    type?: 'button' | 'submit' | 'reset';
-    children: React.ReactNode;
+    size?: Size;
+    color?: Color;
+    variant?: Variant;
+    htmlType?: 'button' | 'submit' | 'reset';
+    children?: React.ReactNode;
+    danger?: boolean;
+    type?: Type;
+    icon?: React.ReactNode;
 }
 
-export default function Button({ 
+export default function ButtonDefault({ 
     onClick, 
-    size = 'large', 
-    color = 'primary', 
-    type = 'button', 
+    size = 'medium', 
+    color = 'blue', 
+    htmlType = 'button',
+    danger = false,
+    type = 'primary',
+    variant,
+    icon,
     children 
 }: ButtonProps) {
 
     return (
-         <button
-            type={type}
-            className={`${styles.button} ${styles[size]} ${styles[color]}`}
+        <Button
+            icon={icon}
+            variant={variant}
             onClick={onClick}
+            size={size}
+            color={color}     
+            danger={danger}
+            htmlType={htmlType}
+            type={type} 
         >
             {children}
-        </button>
+        </Button>
     );
 }

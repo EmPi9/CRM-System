@@ -1,6 +1,7 @@
 import { useState } from "react" 
 import { addTask } from '../api/todos'
-import validateInput from '../helpers/validateInput'
+import { Flex, Form } from 'antd'
+import { useForm } from 'antd/es/form/Form';
 import Button from "../ui/Button/Button"
 import Input from "../ui/Input/Input"
 
@@ -10,30 +11,18 @@ export interface FetchDataProps {
 
 export default function AddTask({ fetchData }: FetchDataProps) {
     const [taskTitle, setTaskTitle] = useState<string>('')
+    const [form] = useForm()
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTaskTitle(e.target.value)
     }
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         try {
-            const validate = validateInput(taskTitle);
-     
-            if(validate === 'spaces'){
-                alert("Ошибка валидации. Введите пожалуйста название задачи заново.");
-                return 
-            }
-            if (validate === '<2') {
-                alert("Минимальная длина текста 2 символа");
-                return 
-            } else if (validate === '>64') {
-                alert("Максимальная длина текста 64 символа");
-                return 
-            }
-
             try {
                 await addTask(taskTitle);
+                await fetchData();
+                form.resetFields();
             } catch(error) {             
                 alert('Ошибка работы сервера.')
                 return          
@@ -46,13 +35,19 @@ export default function AddTask({ fetchData }: FetchDataProps) {
         }
     }
 
-
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="container">
-                <Input onChange={handleInputChange} value={taskTitle} placeholder="Задача" />
-                <Button type="submit">Создать</Button>
-            </div>
-        </form>
+        <Form onFinish={handleSubmit} form={form}>
+            <Flex gap="medium" justify="center">
+                <Form.Item
+                    validateFirst
+                    name="field_b"
+                    validateTrigger="onBlur"
+                    rules={[{ max: 64, message: 'Максимум 64 символа' }, { min: 3, message: 'Минимум 3 символа' }, { required: true, message: 'Заполните поле' }]}
+                >
+                    <Input onChange={handleInputChange} variant="underlined" size='medium' placeholder="Задача" />
+                </Form.Item>
+                <Button htmlType="submit">Создать</Button>
+            </Flex>
+        </Form>
     )
 }

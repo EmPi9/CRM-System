@@ -1,19 +1,18 @@
-import styles from './CheckBox.module.scss';
-import { Color } from '../../types/components.types'
-
+import { Checkbox, type CheckboxChangeEvent } from 'antd';
 export interface CheckBoxProps {
-    onChange?: React.ChangeEventHandler<HTMLInputElement>, 
-    color?: Color,  
+    onChange: (e: CheckboxChangeEvent) => void,   
     checked: boolean 
 }
 
-export default function CheckBox({ 
+export default function CheckBoxDefault({ 
     onChange, 
-    color = 'primary',  
     checked 
     }: CheckBoxProps) {
 
     return (
-        <input type="checkbox" className={`${styles.checkbox} ${styles[color]}`} checked={checked} onChange={onChange}  />
+        <Checkbox
+            onChange={onChange}
+            checked={checked}
+        ></Checkbox>
     );
 }

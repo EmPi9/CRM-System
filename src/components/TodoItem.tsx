@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { deleteTask, editTask } from '../api/todos'
 import CheckBox from '../ui/CheckBox/CheckBox'
-import IconButton from '../ui/IconButton/IconButton'
-import iconEdit from "../assets/icons/fi-rr-edit.svg"
-import iconTrash from "../assets/icons/fi-rs-trash.svg"
-import iconAdd from '../assets/icons/fi-rr-add.svg'
-import iconCross from '../assets/icons/fi-rr-cross.svg'
-import validateInput from "../helpers/validateInput";
+import Button from '../ui/Button/Button'
+import { EditOutlined, PlusOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Card, Flex, Input, Form } from 'antd' 
 import { FetchDataProp, Todo } from "../../src/types/components.types"
+import Typography from "antd/es/typography/Text";
+
 
 export interface TodoItemProps {
      fetchData: FetchDataProp,
@@ -35,20 +34,6 @@ export default function TodoItem({ fetchData, item }: TodoItemProps) {
     }
 
     const handleSaveEditings = async (taskId: number, taskDone: boolean) =>  {
-        const validate = validateInput(inputValue);
-
-        if(validate === 'spaces'){
-            alert("Ошибка валидации. Введите пожалуйста название задачи заново.");
-            return 
-        }
-        if (validate === '<2') {
-            alert("Минимальная длина текста 2 символа");
-            return 
-        } else if (validate === '>64') {
-            alert("Максимальная длина текста 64 символа");
-            return 
-        }
-
         try {
             await editTask(taskId, inputValue, taskDone);
         } catch(error) {
@@ -72,20 +57,61 @@ export default function TodoItem({ fetchData, item }: TodoItemProps) {
     }
 
     return (
-        <div key={item.id} className="task">
-            <CheckBox checked={item.isDone} onChange={() => handleCompleteTask(item.id, item.title, item.isDone)}  />
-            { editing === true 
-            ? (<input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />) 
-            : (<div className={item.isDone == true ? 'completed' : 'opened'}>{item.title}</div>) 
-            }
-            <div className="task-butts">
-                { editing === true 
-                ? ( <><IconButton onClick={() => handleSaveEditings(item.id, item.isDone)} icon={iconAdd} />
-                <IconButton onClick={() => setEditing(false)} icon={iconCross} /> </>)
-                : (<><IconButton onClick={() => handleStartEditing(item.title)} icon={iconEdit} />
-                    <IconButton color="danger" onClick={() => handleDelete(item.id)} icon={iconTrash}  /> </>) 
-                }
-            </div> 
-        </div> 
+       <Card style={{ width: 500 }}>
+  <Flex gap="medium" justify="space-between">
+    <CheckBox
+      checked={item.isDone}
+      onChange={() => handleCompleteTask(item.id, item.title, item.isDone)}
+    />
+
+    {editing === true ? (
+      <Form
+        initialValues={{ field_b: inputValue }}
+        onFinish={() => handleSaveEditings(item.id, item.isDone)} 
+        onValuesChange={(changedValues) => {
+          if (changedValues.field_b) {
+            setInputValue(changedValues.field_b);
+          }
+        }}
+        style={{ flex: 1 }}
+      >
+        <Flex gap="small" align="flex-end" justify="space-between" style={{ width: '100%' }}>
+          <Form.Item
+            name="field_b"
+            validateTrigger="onBlur"
+            rules={[
+              { max: 64, message: 'Максимум 64 символа' },
+              { min: 3, message: 'Минимум 3 символа' },
+              { required: true, message: 'Заполните поле' }
+            ]}
+            style={{ marginBottom: 0, flex: 1 }}
+          >
+            <Input type="text" />
+          </Form.Item>
+          <Button 
+            htmlType="submit" 
+            icon={<PlusOutlined />} 
+          />
+          <Button 
+            htmlType="button" 
+            onClick={() => setEditing(false)} 
+            icon={<CloseOutlined />} 
+          />
+        </Flex>
+      </Form>
+    ) : (
+      <Typography disabled={item.isDone} delete={item.isDone}>
+        {item.title}
+      </Typography>
+    )}
+
+    {editing === false && (
+      <Flex gap="small">
+        <Button onClick={() => handleStartEditing(item.title)} icon={<EditOutlined />} />
+        <Button danger onClick={() => handleDelete(item.id)} icon={<DeleteOutlined />} />
+      </Flex>
+    )}
+  </Flex>
+</Card>
     );
 }

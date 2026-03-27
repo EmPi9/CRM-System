@@ -1,10 +1,18 @@
 const API_URL = 'https://easydev.club/api/v1'
 import { Todos, FilterProps, Todo, TodoInfo } from '../types/components.types'
+import axios from 'axios';
 
 export interface RequestBody {
     title?: string;
     isDone?: boolean;
 }
+
+export const apiClient = axios.create({
+    baseURL: API_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
 
 export async function addTask(title: string): Promise<Todos<Todo, TodoInfo>> {
     try {
@@ -13,15 +21,13 @@ export async function addTask(title: string): Promise<Todos<Todo, TodoInfo>> {
             isDone: false
         };
 
-        const response = await fetch(`${API_URL}/todos`, {
-            method: "POST", 
-            headers: { "Content-Type": "application/json" }, 
-            body: JSON.stringify(payload) 
-        })
+        const response = await apiClient.post<Todos<Todo, TodoInfo>>(
+            '/todos',
+            payload
+        )
 
-        if(response.ok){
-            const data: Todos<Todo, TodoInfo> = await response.json();
-            return data;
+        if(response.status >= 200 && response.status < 300){
+            return response.data;
         } else {
             throw new Error(`HTTP error ${response.status}`);
         }     
@@ -33,11 +39,11 @@ export async function addTask(title: string): Promise<Todos<Todo, TodoInfo>> {
 
 export async function deleteTask(taskId: number){
     try {
-        const response = await fetch(`${API_URL}/todos/${taskId}`, {
-        method: "DELETE", 
-        })
+        const response = await apiClient.delete(
+            `/todos/${taskId}`
+        )
 
-        if(response.ok){
+        if(response.status >= 200 && response.status < 300){
             return
         } else {
             throw new Error(`HTTP error ${response.status}`);
@@ -50,18 +56,17 @@ export async function deleteTask(taskId: number){
 
 export async function editTask(taskId: number, title: string, isDone: boolean) {
     try {
-        const response = await fetch(`${API_URL}/todos/${taskId}`, {
-        method: "PUT",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            title: title,
-            isDone: isDone,
-            })
-        })
+        const editBodyRequest = {
+            title,
+            isDone
+        }
 
-        if(response.ok){
+        const response = await apiClient.put(
+            `/todos/${taskId}`,
+            editBodyRequest
+        )
+
+        if(response.status >= 200 && response.status < 300){
             return
         } else {
             throw new Error(`HTTP error ${response.status}`);
@@ -74,13 +79,12 @@ export async function editTask(taskId: number, title: string, isDone: boolean) {
 
 export async function getTodos(filter: FilterProps): Promise<Todos<Todo, TodoInfo>> {
     try {
-        const response = await fetch(`${API_URL}/todos?filter=${filter}`, {
-            method: "GET", 
-            })
+        const response = await apiClient.get(
+            `/todos?filter=${filter}`
+        )
         
-        if(response.ok){
-            const data: Todos<Todo, TodoInfo> = await response.json();
-            return data;
+        if(response.status >= 200 && response.status < 300){
+            return response.data;
         } else {
             throw new Error(`HTTP error ${response.status}`);
         } 
