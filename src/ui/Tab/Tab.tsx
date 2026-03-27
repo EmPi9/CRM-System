@@ -1,10 +1,10 @@
 import styles from './Tab.module.scss';
-import { Color } from '../../types/components.types'
+import { Color } from '../types'
 
 export interface TabProps {
     onClick?: React.MouseEventHandler<HTMLButtonElement>, 
     color?: Color,  
-    active: String, 
+    active: string, 
     children: React.ReactNode,
 }
 

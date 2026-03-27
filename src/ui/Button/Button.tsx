@@ -1,5 +1,5 @@
 import styles from './Button.module.scss';
-import { Size, Color } from '../../types/components.types';
+import { Size, Color } from '../types';
 export interface ButtonProps {
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
     size?: Size; 

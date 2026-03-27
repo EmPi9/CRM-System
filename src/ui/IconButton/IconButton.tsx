@@ -1,5 +1,5 @@
 import styles from './IconButton.module.scss';
-import { Size, Color } from '../../types/components.types'
+import { Size, Color } from '../types'
 
 export interface IconButtonProps {
     onClick: React.MouseEventHandler<HTMLButtonElement>, 

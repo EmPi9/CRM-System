@@ -1,11 +1,6 @@
 export type FetchDataProp = () => Promise<void>;
 
-export type Color = 'primary' | 'secondary' | 'danger';
-
 export type FilterProps = 'all' | 'inWork' | 'completed';
-
-export type Size = 'large' | 'small';
-
 export interface Todo { 
   id: number;
   title: string;
@@ -19,7 +14,7 @@ export interface TodoInfo {
   inWork: number;
 }
 
-export type Todos<T, N> = {
+export type MetaResponse<T, N> = {
 	data: T[]
 	info: N
 	meta: {
