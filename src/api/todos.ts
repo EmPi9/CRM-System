@@ -1,5 +1,5 @@
 const API_URL = 'https://easydev.club/api/v1'
-import { Todos, FilterProps, Todo, TodoInfo } from '../types/components.types'
+import { MetaResponse, FilterProps, Todo, TodoInfo } from '../types/components.types'
 import axios from 'axios';
 
 export interface RequestBody {
@@ -14,14 +14,14 @@ export const apiClient = axios.create({
     },
 });
 
-export async function addTask(title: string): Promise<Todos<Todo, TodoInfo>> {
+export async function addTask(title: string): Promise<MetaResponse<Todo, TodoInfo>> {
     try {
         const payload: RequestBody = {
             title,
             isDone: false
         };
 
-        const response = await apiClient.post<Todos<Todo, TodoInfo>>(
+        const response = await apiClient.post<MetaResponse<Todo, TodoInfo>>(
             '/todos',
             payload
         )
@@ -77,7 +77,7 @@ export async function editTask(taskId: number, title: string, isDone: boolean) {
     }
 }
 
-export async function getTodos(filter: FilterProps): Promise<Todos<Todo, TodoInfo>> {
+export async function getTodos(filter: FilterProps): Promise<MetaResponse<Todo, TodoInfo>> {
     try {
         const response = await apiClient.get(
             `/todos?filter=${filter}`

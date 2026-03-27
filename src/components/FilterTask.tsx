@@ -1,10 +1,10 @@
 import Button from "../ui/Button/Button"
 import { Flex } from 'antd'
 import { Dispatch, SetStateAction } from "react";
-import { Todos, Todo, TodoInfo, FilterProps } from '../types/components.types'
+import { MetaResponse, Todo, TodoInfo, FilterProps } from '../types/components.types'
 export interface FilterTaskProps {
     filter: FilterProps, 
-    todos: Todos<Todo, TodoInfo>, 
+    todos: MetaResponse<Todo, TodoInfo>, 
     setFilter: Dispatch<SetStateAction<FilterProps>>,
 }
 

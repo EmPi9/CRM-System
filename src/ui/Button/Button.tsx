@@ -1,4 +1,4 @@
-import { Size, Color, Type, Variant } from '../../types/components.types';
+import { Size, Color, Type, Variant } from '../types';
 import { Button } from 'antd';
 
 export interface ButtonProps {

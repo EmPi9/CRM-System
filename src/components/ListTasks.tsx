@@ -1,10 +1,10 @@
 import TodoItem from "./TodoItem"
-import { FetchDataProp, Todo, Todos, TodoInfo } from "../../src/types/components.types"
+import { FetchDataProp, Todo, MetaResponse, TodoInfo } from "../../src/types/components.types"
 import { Flex } from 'antd'
 
 export interface ListTaskProps {
     fetchData: FetchDataProp, 
-    todos: Todos<Todo, TodoInfo>
+    todos: MetaResponse<Todo, TodoInfo>
 }
 
 export default function ListTasks({ fetchData, todos }: ListTaskProps) {

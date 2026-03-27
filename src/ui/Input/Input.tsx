@@ -1,5 +1,5 @@
-import { Input, ButtonProps } from 'antd'
-import { VariantInput, Size } from '../../types/components.types'
+import { Input } from 'antd'
+import { VariantInput, Size } from '../types'
 
 export interface InputProps {
     onChange?: React.ChangeEventHandler<HTMLInputElement>;
@@ -10,7 +10,7 @@ export interface InputProps {
     style?: React.CSSProperties
 }
 
-export default function CheckBox({ 
+export default function InputDefault({ 
     onChange, 
     value,
     variant,

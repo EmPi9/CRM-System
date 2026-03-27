@@ -5,10 +5,10 @@ import AddTask from "../components/AddTask";
 import FilterTask from "../components/FilterTask";
 import ListTasks from "../components/ListTasks";
 import AsideMenu from "../components/AsideMenu"
-import { Todos, FilterProps, Todo, TodoInfo } from "../../src/types/components.types"
+import { MetaResponse, FilterProps, Todo, TodoInfo } from "../../src/types/components.types"
 
 export default function TodoListPage() {
-    const [todos, setTodos] = useState<Todos<Todo, TodoInfo>>({
+    const [todos, setTodos] = useState<MetaResponse<Todo, TodoInfo>>({
         data: [],
         info: { all: 0, completed: 0, inWork: 0 },
         meta: { totalAmount: 0 } })
