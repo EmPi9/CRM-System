@@ -88,7 +88,7 @@ export default function TodoItem({ fetchData, item, setNeedUpadete }: TodoItemPr
             validateTrigger="onBlur"
             rules={[
               { max: 64, message: 'Максимум 64 символа' },
-              { min: 3, message: 'Минимум 3 символа' },
+              { min: 2, message: 'Минимум 2 символа' },
               { required: true, message: 'Заполните поле' },
               { whitespace: true, message: 'Поле должно состоять из символов' }
             ]}
