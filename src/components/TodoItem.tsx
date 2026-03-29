@@ -58,6 +58,11 @@ export default function TodoItem({ fetchData, item, setNeedUpadete }: TodoItemPr
         await fetchData();
     }
 
+    const handleStopEditing = async () => {
+        setEditing(false);
+        setNeedUpadete(true);
+    }
+
     return (
        <Card style={{ width: 500 }}>
   <Flex gap="medium" justify="space-between">
@@ -84,7 +89,8 @@ export default function TodoItem({ fetchData, item, setNeedUpadete }: TodoItemPr
             rules={[
               { max: 64, message: 'Максимум 64 символа' },
               { min: 3, message: 'Минимум 3 символа' },
-              { required: true, message: 'Заполните поле' }
+              { required: true, message: 'Заполните поле' },
+              { whitespace: true, message: 'Поле должно состоять из символов' }
             ]}
             style={{ marginBottom: 0, flex: 1 }}
           >
@@ -96,7 +102,7 @@ export default function TodoItem({ fetchData, item, setNeedUpadete }: TodoItemPr
           />
           <Button 
             htmlType="button" 
-            onClick={() => setEditing(false)} 
+            onClick={() => handleStopEditing()} 
             icon={<CloseOutlined />} 
           />
         </Flex>

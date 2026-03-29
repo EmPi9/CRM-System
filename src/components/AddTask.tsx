@@ -42,7 +42,12 @@ export default function AddTask({ fetchData }: FetchDataProps) {
                     validateFirst
                     name="field_b"
                     validateTrigger="onBlur"
-                    rules={[{ max: 64, message: 'Максимум 64 символа' }, { min: 3, message: 'Минимум 3 символа' }, { required: true, message: 'Заполните поле' }]}
+                    rules={[
+                        { max: 64, message: 'Максимум 64 символа'},
+                        { min: 2, message: 'Минимум 2 символа'},
+                        { required: true, message: 'Заполните поле'},
+                        { whitespace: true, message: 'Поле должно состоять из символов'}
+                    ]}
                 >
                     <Input onChange={handleInputChange} variant="underlined" size='medium' placeholder="Задача" />
                 </Form.Item>
