@@ -1,4 +1,4 @@
-export default function validateInput(inputValue) {
+export default function validateInput(inputValue: string) {
     const spaces = checkSpaces(inputValue);
 
     if(!spaces){
@@ -10,7 +10,7 @@ export default function validateInput(inputValue) {
         return '>64'
     }
 
-    function checkSpaces(str) {
+    function checkSpaces(str: string) {
         return str.trim() !== '';
     }
 

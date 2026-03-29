@@ -1,4 +1,12 @@
 import styles from './Button.module.scss';
+import { Size, Color } from '../types';
+export interface ButtonProps {
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+    size?: Size; 
+    color?: Color; 
+    type?: 'button' | 'submit' | 'reset';
+    children: React.ReactNode;
+}
 
 export default function Button({ 
     onClick, 
@@ -6,7 +14,7 @@ export default function Button({
     color = 'primary', 
     type = 'button', 
     children 
-}) {
+}: ButtonProps) {
 
     return (
          <button
