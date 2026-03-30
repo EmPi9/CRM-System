@@ -80,7 +80,11 @@ export async function editTask(taskId: number, title: string, isDone: boolean) {
 export async function getTodos(filter: FilterProps): Promise<MetaResponse<Todo, TodoInfo>> {
     try {
         const response = await apiClient.get(
-            `/todos?filter=${filter}`
+            `/todos`, {
+                params: {
+                    filter: filter
+                }
+            }
         )
         
         if(response.status >= 200 && response.status < 300){
