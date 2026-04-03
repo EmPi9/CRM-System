@@ -1,4 +1,3 @@
-import { useState } from "react" 
 import { addTask } from '../api/todos'
 import { Flex, Form } from 'antd'
 import { useForm } from 'antd/es/form/Form';
@@ -10,29 +9,19 @@ export interface FetchDataProps {
 }
 
 export default function AddTask({ fetchData }: FetchDataProps) {
-    const [taskTitle, setTaskTitle] = useState<string>('')
     const [form] = useForm()
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTaskTitle(e.target.value)
-    }
-
-    const handleSubmit = async () => {
+    const handleSubmit = async (values: { nameTask: string }) => {
         try {
-            try {
-                await addTask(taskTitle);
-                await fetchData();
-                form.resetFields();
-            } catch(error) {             
-                alert('Ошибка работы сервера.')
-                return          
-            }
-
+            await addTask(values.nameTask);
             await fetchData();
-            setTaskTitle('');
-        } catch {
-
+            form.resetFields();
+        } catch(error) {             
+            return          
         }
+
+        await fetchData();
+
     }
 
     return (
@@ -40,7 +29,7 @@ export default function AddTask({ fetchData }: FetchDataProps) {
             <Flex gap="medium" justify="center">
                 <Form.Item
                     validateFirst
-                    name="field_b"
+                    name="nameTask"
                     validateTrigger="onBlur"
                     rules={[
                         { max: 64, message: 'Максимум 64 символа'},
@@ -49,7 +38,7 @@ export default function AddTask({ fetchData }: FetchDataProps) {
                         { whitespace: true, message: 'Поле должно состоять из символов'}
                     ]}
                 >
-                    <Input onChange={handleInputChange} variant="underlined" size='medium' placeholder="Задача" />
+                    <Input variant="underlined" size='medium' placeholder="Задача" />
                 </Form.Item>
                 <Button htmlType="submit">Создать</Button>
             </Flex>

@@ -5,36 +5,35 @@ import { useNavigate, useLocation } from 'react-router';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-const App: React.FC = () => {
+const AsideMenu: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation(); 
 
-    const selectedKey = location.pathname === '/profile' ? '2' : '1';   
-
     const items: MenuItem[] = [
       {
-        key: 'grp',
+        key: 'group',
         label: 'Меню',
         type: 'group',
         children: [
-          { key: '1', label: 'Список задач', onClick: () => navigate('/') },
-          { key: '2', label: 'Профиль', onClick: () => navigate('/profile') },
+          { key: '/', label: 'Список задач', onClick: () => navigate('/') },
+          { key: '/profile', label: 'Профиль', onClick: () => navigate('/profile') },
         ],
       },
     ];
 
+    const selectedKey = location.pathname;
 
-  return (
-    <Menu
-      style={{ width: 256, position: 'absolute'}}
-      defaultSelectedKeys={['1']}
-      selectedKeys={[selectedKey]}
-      defaultOpenKeys={['sub1']}
-      mode="inline"
-      items={items}
-    />
-  );
+
+    return (
+      <Menu
+        style={{ width: 256, position: 'absolute'}}
+        defaultSelectedKeys={['/']}
+        selectedKeys={[selectedKey]}
+        mode="inline"
+        items={items}
+      />
+    );
 };
 
-export default App;
+export default AsideMenu;
 

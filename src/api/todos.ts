@@ -1,5 +1,5 @@
 const API_URL = 'https://easydev.club/api/v1'
-import { MetaResponse, FilterProps, Todo, TodoInfo } from '../types/components.types'
+import { MetaResponse, FilterProps, Todo, TodoInfo } from '../types/components.models.types'
 import axios from 'axios';
 
 export interface RequestBody {
@@ -14,7 +14,7 @@ export const apiClient = axios.create({
     },
 });
 
-export async function addTask(title: string): Promise<MetaResponse<Todo, TodoInfo>> {
+export async function addTask(title: string) {
     try {
         const payload: RequestBody = {
             title,
@@ -28,28 +28,22 @@ export async function addTask(title: string): Promise<MetaResponse<Todo, TodoInf
 
         if(response.status >= 200 && response.status < 300){
             return response.data;
-        } else {
-            throw new Error(`HTTP error ${response.status}`);
-        }     
+        }  
 
-    } catch (error) {     
+    } catch (error) {
+        alert('Ошибка работы сервера.') 
         throw error;
     }
 }
 
 export async function deleteTask(taskId: number){
     try {
-        const response = await apiClient.delete(
+        await apiClient.delete(
             `/todos/${taskId}`
         )
 
-        if(response.status >= 200 && response.status < 300){
-            return
-        } else {
-            throw new Error(`HTTP error ${response.status}`);
-        }
-
     } catch (error) {
+        alert('Ошибка работы сервера.')
         throw error;
     }
 }
@@ -61,23 +55,18 @@ export async function editTask(taskId: number, title: string, isDone: boolean) {
             isDone
         }
 
-        const response = await apiClient.put(
+        await apiClient.put(
             `/todos/${taskId}`,
             editBodyRequest
         )
 
-        if(response.status >= 200 && response.status < 300){
-            return
-        } else {
-            throw new Error(`HTTP error ${response.status}`);
-        }
-
     } catch (error) {
+        alert('Ошибка работы сервера.')
         throw error;
     }
 }
 
-export async function getTodos(filter: FilterProps): Promise<MetaResponse<Todo, TodoInfo>> {
+export async function getTodos(filter: FilterProps) {
     try {
         const response = await apiClient.get(
             `/todos`, {
@@ -89,12 +78,10 @@ export async function getTodos(filter: FilterProps): Promise<MetaResponse<Todo, 
         
         if(response.status >= 200 && response.status < 300){
             return response.data;
-        } else {
-            throw new Error(`HTTP error ${response.status}`);
-        } 
+        }
         
     } catch (error) {
-
+        alert('Ошибка работы сервера.')
         throw error;
     }
 } 
