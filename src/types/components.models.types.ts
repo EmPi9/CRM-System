@@ -1,6 +1,6 @@
 export type FetchDataProp = () => Promise<void>;
 
-export type FilterProps = 'all' | 'inWork' | 'completed';
+export type Filters = 'all' | 'inWork' | 'completed';
 
 export interface Todo { 
   id: number;

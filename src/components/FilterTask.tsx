@@ -1,17 +1,17 @@
 import Button from "../ui/Button/Button"
 import { Flex } from 'antd'
 import { Dispatch, SetStateAction } from "react";
-import { MetaResponse, Todo, TodoInfo, FilterProps } from '../types/components.models.types'
+import { MetaResponse, Todo, TodoInfo, Filters } from '../types/components.models.types'
 export interface FilterTaskProps {
-    filter: FilterProps, 
+    filter: Filters, 
     todos: MetaResponse<Todo, TodoInfo>, 
-    setFilter: Dispatch<SetStateAction<FilterProps>>,
+    setFilter: Dispatch<SetStateAction<Filters>>,
 }
 
 
 export default function FilterTask({ filter, todos, setFilter }: FilterTaskProps) {
 
-    const handleChangeFilter = (filter: FilterProps) => {
+    const handleChangeFilter = (filter: Filters) => {
         setFilter(filter);
     }
 

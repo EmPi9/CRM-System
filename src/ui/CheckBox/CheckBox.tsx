@@ -1,5 +1,5 @@
 import { Checkbox, type CheckboxChangeEvent } from 'antd';
-export interface CheckBoxProps {
+interface CheckBox {
     onChange: (e: CheckboxChangeEvent) => void,   
     checked: boolean 
 }
@@ -7,7 +7,7 @@ export interface CheckBoxProps {
 export default function CheckBoxDefault({ 
     onChange, 
     checked 
-    }: CheckBoxProps) {
+    }: CheckBox) {
 
     return (
         <Checkbox

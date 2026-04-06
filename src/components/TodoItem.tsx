@@ -34,9 +34,9 @@ export default function TodoItem({ fetchData, item, setIsNeedUpadete }: TodoItem
         setInputValue(title);
     }
 
-    const handleSaveEditings = async (values: {taskId: number, taskDone: boolean}) =>  {
+    const handleSaveEditings = async (values: { editTask: string }, taskId: number, taskDone: boolean) =>  {
         try {
-            await editTask(values.taskId, inputValue, values.taskDone);
+            await editTask(taskId, values.editTask, taskDone);
         } catch(error) {
             return            
         }
@@ -71,10 +71,10 @@ export default function TodoItem({ fetchData, item, setIsNeedUpadete }: TodoItem
           {isEditing === true ? (
             <Form
               initialValues={{ editTask: inputValue }}
-              onFinish={handleSaveEditings(item.id, item.isDone)} 
+              onFinish={(values: { editTask: string }) => handleSaveEditings(values, item.id, item.isDone)} 
               onValuesChange={(changedValues) => {
                 if (changedValues.editTask) {
-                  setInputValue(changedValues.field_b);
+                  setInputValue(changedValues.editTask);
                 }
               }}
               style={{ flex: 1 }}

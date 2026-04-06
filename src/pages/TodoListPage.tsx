@@ -5,14 +5,14 @@ import AddTask from "../components/AddTask";
 import FilterTask from "../components/FilterTask";
 import ListTasks from "../components/ListTasks";
 import AsideMenu from "../components/AsideMenu"
-import { MetaResponse, FilterProps, Todo, TodoInfo } from "../types/components.models.types"
+import { MetaResponse, Filters, Todo, TodoInfo } from "../types/components.models.types"
 
 export default function TodoListPage() {
     const [todos, setTodos] = useState<MetaResponse<Todo, TodoInfo>>({
         data: [],
         info: { all: 0, completed: 0, inWork: 0 },
         meta: { totalAmount: 0 } })
-    const [filter, setFilter] = useState<FilterProps>('all')
+    const [filter, setFilter] = useState<Filters>('all')
     const [isNeedUpdate, setIsNeedUpadete] = useState<boolean>(true)
 
     const fetchData = async () => {
@@ -28,12 +28,10 @@ export default function TodoListPage() {
         fetchData();
         if(isNeedUpdate === true){
             
-            var intervalId = setInterval(() => {
+            const intervalId = setInterval(() => {
               fetchData();
             }, 5000);
 
-            return () => clearInterval(intervalId);
-        } else {
             return () => clearInterval(intervalId);
         }
 

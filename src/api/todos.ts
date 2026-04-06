@@ -1,6 +1,16 @@
-const API_URL = 'https://easydev.club/api/v1'
-import { MetaResponse, FilterProps, Todo, TodoInfo } from '../types/components.models.types'
+import { MetaResponse, Filters, Todo, TodoInfo } from '../types/components.models.types'
 import axios from 'axios';
+import { notification } from 'antd';
+
+const API_URL = 'https://easydev.club/api/v1'
+
+const openNotification = () => {
+  notification.open({
+    title: 'Ошибка сервера',
+    description:
+      'Ошибка работы сервера, пожалуйста попробуйте позже',
+  });
+};
 
 export interface RequestBody {
     title?: string;
@@ -13,6 +23,8 @@ export const apiClient = axios.create({
         'Content-Type': 'application/json',
     },
 });
+
+
 
 export async function addTask(title: string) {
     try {
@@ -31,7 +43,7 @@ export async function addTask(title: string) {
         }  
 
     } catch (error) {
-        alert('Ошибка работы сервера.') 
+        openNotification() 
         throw error;
     }
 }
@@ -43,7 +55,7 @@ export async function deleteTask(taskId: number){
         )
 
     } catch (error) {
-        alert('Ошибка работы сервера.')
+        openNotification()
         throw error;
     }
 }
@@ -61,12 +73,12 @@ export async function editTask(taskId: number, title: string, isDone: boolean) {
         )
 
     } catch (error) {
-        alert('Ошибка работы сервера.')
+        openNotification()
         throw error;
     }
 }
 
-export async function getTodos(filter: FilterProps) {
+export async function getTodos(filter: Filters) {
     try {
         const response = await apiClient.get(
             `/todos`, {
@@ -81,7 +93,7 @@ export async function getTodos(filter: FilterProps) {
         }
         
     } catch (error) {
-        alert('Ошибка работы сервера.')
+        openNotification()
         throw error;
     }
 } 

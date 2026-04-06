@@ -1,7 +1,7 @@
 import { Size, Color, Type, Variant } from '../types';
 import { Button } from 'antd';
 
-export interface ButtonProps {
+interface Button {
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
     size?: Size;
     color?: Color;
@@ -23,7 +23,7 @@ export default function ButtonDefault({
     variant,
     icon,
     children 
-}: ButtonProps) {
+}: Button) {
 
     return (
         <Button

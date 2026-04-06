@@ -1,7 +1,7 @@
 import { Input } from 'antd'
 import { VariantInput, Size } from '../types'
 
-export interface InputProps {
+interface Input {
     onChange?: React.ChangeEventHandler<HTMLInputElement>;
     value?: string;
     placeholder?: string;
@@ -17,7 +17,7 @@ export default function InputDefault({
     size,
     style,
     placeholder  
-}: InputProps ) {
+}: Input ) {
 
     return (
        <Input type="text" size={size} variant={variant} style={style} onChange={onChange} value={value} placeholder={placeholder} />
