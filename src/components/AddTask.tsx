@@ -1,9 +1,8 @@
 import { addTask } from '../api/todos'
-import { Flex, Form } from 'antd'
+import { Flex, Form, Button, Input } from 'antd'
 import { useForm } from 'antd/es/form/Form';
-import Button from "../ui/Button/Button"
-import Input from "../ui/Input/Input"
-
+import { AxiosError } from 'axios';
+import { openNotification } from '../helper/notification'
 export interface FetchDataProps {
     fetchData: () => Promise<void>;
 }
@@ -14,14 +13,18 @@ export default function AddTask({ fetchData }: FetchDataProps) {
     const handleSubmit = async (values: { nameTask: string }) => {
         try {
             await addTask(values.nameTask);
-            await fetchData();
             form.resetFields();
-        } catch(error) {             
+        } catch(error: AxiosError) {
+            if(error.response.status == 400){
+                openNotification('Ошибка', 'Недопустимое отсутствующие/некорректные поля.')
+            }
+            if(error.response.status == 500){
+                openNotification('Ошибка', 'Внутренняя ошибка сервера.')
+            }
             return          
         }
 
         await fetchData();
-
     }
 
     return (
@@ -40,7 +43,7 @@ export default function AddTask({ fetchData }: FetchDataProps) {
                 >
                     <Input variant="underlined" size='medium' placeholder="Задача" />
                 </Form.Item>
-                <Button htmlType="submit">Создать</Button>
+                <Button type="primary" htmlType="submit">Создать</Button>
             </Flex>
         </Form>
     )

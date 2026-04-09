@@ -1,7 +1,7 @@
 import TodoListPage from './pages/TodoListPage'
 import ProfilePage from './pages/ProfilePage'
 import { BrowserRouter as Router, Routes, Route } from 'react-router';
-import AsideMenu from '../src/components/AsideMenu';
+import AsideMenu from './components/AsideMenu';
 
 function App() {
 

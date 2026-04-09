@@ -1,7 +1,6 @@
-import Button from "../ui/Button/Button"
-import { Flex } from 'antd'
+import { Flex, Button } from 'antd'
 import { Dispatch, SetStateAction } from "react";
-import { MetaResponse, Todo, TodoInfo, Filters } from '../types/components.models.types'
+import { MetaResponse, Todo, TodoInfo, Filters } from '../types/todos.models.types'
 export interface FilterTaskProps {
     filter: Filters, 
     todos: MetaResponse<Todo, TodoInfo>, 

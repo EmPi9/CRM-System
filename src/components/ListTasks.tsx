@@ -1,5 +1,5 @@
 import TodoItem from "./TodoItem"
-import { FetchDataProp, Todo, MetaResponse, TodoInfo } from "../types/components.models.types"
+import { FetchDataProp, Todo, MetaResponse, TodoInfo } from "../types/todos.models.types"
 import { Flex } from 'antd'
 import { Dispatch, SetStateAction } from "react";
 

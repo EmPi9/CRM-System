@@ -5,7 +5,9 @@ import AddTask from "../components/AddTask";
 import FilterTask from "../components/FilterTask";
 import ListTasks from "../components/ListTasks";
 import AsideMenu from "../components/AsideMenu"
-import { MetaResponse, Filters, Todo, TodoInfo } from "../types/components.models.types"
+import { AxiosError } from 'axios';
+import { openNotification } from '../helper/notification'
+import { MetaResponse, Filters, Todo, TodoInfo } from "../types/todos.models.types"
 
 export default function TodoListPage() {
     const [todos, setTodos] = useState<MetaResponse<Todo, TodoInfo>>({
@@ -19,7 +21,13 @@ export default function TodoListPage() {
         try {
             const data = await getTodos(filter);
             setTodos(data);
-        } catch(error) {
+        } catch(error: AxiosError) {
+            if(error.response.status == 400){
+                openNotification('Ошибка', 'Недопустимое отсутствующие/некорректные поля.')
+            }
+            if(error.response.status == 500){
+                openNotification('Ошибка', 'Внутренняя ошибка сервера.')
+            }
             return             
         }
     }

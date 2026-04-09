@@ -1,11 +1,12 @@
 import { useState, Dispatch, SetStateAction } from "react";
 import { deleteTask, editTask } from '../api/todos'
-import CheckBox from '../ui/CheckBox/CheckBox'
-import Button from '../ui/Button/Button'
+import { Checkbox } from 'antd';
 import { EditOutlined, PlusOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Card, Flex, Input, Form } from 'antd' 
-import { FetchDataProp, Todo } from "../types/components.models.types"
+import { Card, Flex, Input, Form, Button } from 'antd' 
+import { FetchDataProp, Todo } from "../types/todos.models.types"
 import Typography from "antd/es/typography/Text";
+import { openNotification } from '../helper/notification'
+import { AxiosError } from 'axios';
 
 
 export interface TodoItemProps {
@@ -21,7 +22,16 @@ export default function TodoItem({ fetchData, item, setIsNeedUpadete }: TodoItem
     const handleDelete = async (taskId: number) =>  {
         try {
             await deleteTask(taskId);
-        } catch(error) {
+        } catch(error: AxiosError) {
+            if(error.response.status == 400){
+                openNotification('Ошибка', 'Недопустимое отсутствующие/некорректные поля.')
+            }
+            if(error.response.status == 404){
+                openNotification('Ошибка', 'Задача не найдена.')
+            }
+            if(error.response.status == 500){
+                openNotification('Ошибка', 'Внутренняя ошибка сервера.')
+            }
             return            
         }
 
@@ -37,7 +47,17 @@ export default function TodoItem({ fetchData, item, setIsNeedUpadete }: TodoItem
     const handleSaveEditings = async (values: { editTask: string }, taskId: number, taskDone: boolean) =>  {
         try {
             await editTask(taskId, values.editTask, taskDone);
-        } catch(error) {
+        } catch(error: AxiosError) {
+
+            if(error.response.status == 400){
+                openNotification('Ошибка', 'Недопустимое тело запроса или отсутствующие/некорректные поля.')
+            }
+            if(error.response.status == 404){
+                openNotification('Ошибка', 'Задача не найдена.')
+            }
+            if(error.response.status == 500){
+                openNotification('Ошибка', 'Внутренняя ошибка сервера.')
+            }
             return            
         }
         setIsEditing(false)
@@ -49,7 +69,16 @@ export default function TodoItem({ fetchData, item, setIsNeedUpadete }: TodoItem
 
         try {
             await editTask(taskId, taskTitle, taskDone);
-        } catch(error) {
+        } catch(error: AxiosError) {
+            if(error.response.status == 400){
+                openNotification('Ошибка', 'Недопустимое тело запроса или отсутствующие/некорректные поля.')
+            }
+            if(error.response.status == 404){
+                openNotification('Ошибка', 'Задача не найдена.')
+            }
+            if(error.response.status == 500){
+                openNotification('Ошибка', 'Внутренняя ошибка сервера.')
+            }
             return            
         }
         await fetchData();
@@ -63,7 +92,7 @@ export default function TodoItem({ fetchData, item, setIsNeedUpadete }: TodoItem
     return (
       <Card style={{ width: 500 }}>
         <Flex gap="medium" justify="space-between">
-          <CheckBox
+          <Checkbox
             checked={item.isDone}
             onChange={() => handleCompleteTask(item.id, item.title, item.isDone)}
           />      
@@ -93,11 +122,13 @@ export default function TodoItem({ fetchData, item, setIsNeedUpadete }: TodoItem
                 >
                   <Input type="text" />
                 </Form.Item>
-                <Button 
+                <Button
+                  type="primary"
                   htmlType="submit" 
                   icon={<PlusOutlined />} 
                 />
-                <Button 
+                <Button
+                  type="primary"
                   htmlType="button" 
                   onClick={() => handleStopEditing()} 
                   icon={<CloseOutlined />} 
@@ -112,8 +143,8 @@ export default function TodoItem({ fetchData, item, setIsNeedUpadete }: TodoItem
 
           {isEditing === false && (
             <Flex gap="small">
-              <Button onClick={() => handleStartEditing(item.title)} icon={<EditOutlined />} />
-              <Button danger onClick={() => handleDelete(item.id)} icon={<DeleteOutlined />} />
+              <Button type="primary" onClick={() => handleStartEditing(item.title)} icon={<EditOutlined />} />
+              <Button type="primary" danger onClick={() => handleDelete(item.id)} icon={<DeleteOutlined />} />
             </Flex>
           )}
         </Flex>
