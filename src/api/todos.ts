@@ -67,7 +67,7 @@ export async function getTodos(filter: Filters) {
             }
         )
         
-    
+        
         return response.data;
 
 } 
