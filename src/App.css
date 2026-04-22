@@ -1,0 +1,30 @@
+.menu {
+    width: 256px;
+}
+
+.todo_item_card {
+    width: 500px;
+}
+
+.todo_item_input_edit {
+    margin-bottom: 0;
+    flex: 1;
+}
+
+.todo_item_form {
+    flex: 1;
+}
+
+.todo_item_inputs {
+    width: 100%;
+}
+
+.main {
+    display: flex;
+    align-items: center;
+}
+
+.app {
+    display: flex;
+    gap: 25%;
+}

@@ -5,92 +5,67 @@ import { EditOutlined, PlusOutlined, CloseOutlined, DeleteOutlined } from '@ant-
 import { Card, Flex, Input, Form, Button } from 'antd' 
 import { FetchDataProp, Todo } from "../types/todos.models.types"
 import Typography from "antd/es/typography/Text";
-import { openNotification } from '../helper/notification'
+import { handleApiError } from '../helper/handleApiError'
 import { AxiosError } from 'axios';
 
 
-export interface TodoItemProps {
+interface Props {
      fetchData: FetchDataProp,
      item: Todo,
-     setIsNeedUpadete: Dispatch<SetStateAction<boolean>>, 
+     setIsNeedUpdate: Dispatch<SetStateAction<boolean>>, 
 }
 
-export default function TodoItem({ fetchData, item, setIsNeedUpadete }: TodoItemProps) {
+export default function TodoItem({ fetchData, item, setIsNeedUpdate }: Props) {
     const [isEditing, setIsEditing] = useState<boolean>(false)
     const [inputValue, setInputValue] = useState<string>('')
 
-    const handleDelete = async (taskId: number) =>  {
+    const handleDelete = async (taskId: number): Promise<void> =>  {
         try {
             await deleteTask(taskId);
+            await fetchData();
         } catch(error: AxiosError) {
-            if(error.response.status == 400){
-                openNotification('Ошибка', 'Недопустимое отсутствующие/некорректные поля.')
-            }
-            if(error.response.status == 404){
-                openNotification('Ошибка', 'Задача не найдена.')
-            }
-            if(error.response.status == 500){
-                openNotification('Ошибка', 'Внутренняя ошибка сервера.')
-            }
+            handleApiError(error);
             return            
         }
-
-        fetchData();
     }
     
     const handleStartEditing = (title: string) => {
         setIsEditing(true);
-        setIsNeedUpadete(false);
+        setIsNeedUpdate(false);
         setInputValue(title);
     }
 
-    const handleSaveEditings = async (values: { editTask: string }, taskId: number, taskDone: boolean) =>  {
+    const handleSaveEditings = async (values: { editTask: string }, taskId: number, taskDone: boolean): Promise<void> =>  {
         try {
             await editTask(taskId, values.editTask, taskDone);
         } catch(error: AxiosError) {
-
-            if(error.response.status == 400){
-                openNotification('Ошибка', 'Недопустимое тело запроса или отсутствующие/некорректные поля.')
-            }
-            if(error.response.status == 404){
-                openNotification('Ошибка', 'Задача не найдена.')
-            }
-            if(error.response.status == 500){
-                openNotification('Ошибка', 'Внутренняя ошибка сервера.')
-            }
+            handleApiError(error)
             return            
         }
         setIsEditing(false)
-        setIsNeedUpadete(true);
+        setIsNeedUpdate(true);
     }
 
-    const handleCompleteTask = async (taskId: number, taskTitle: string, taskDone: boolean) => {
+    const handleCompleteTask = async (taskId: number, taskTitle: string, taskDone: boolean): Promise<void> => {
         taskDone = !taskDone
 
         try {
             await editTask(taskId, taskTitle, taskDone);
+            await fetchData();
         } catch(error: AxiosError) {
-            if(error.response.status == 400){
-                openNotification('Ошибка', 'Недопустимое тело запроса или отсутствующие/некорректные поля.')
-            }
-            if(error.response.status == 404){
-                openNotification('Ошибка', 'Задача не найдена.')
-            }
-            if(error.response.status == 500){
-                openNotification('Ошибка', 'Внутренняя ошибка сервера.')
-            }
+            handleApiError(error)
             return            
         }
-        await fetchData();
+        
     }
 
-    const handleStopEditing = async () => {
+    const handleStopEditing = async (): Promise<void> => {
         setIsEditing(false);
-        setIsNeedUpadete(true);
+        setIsNeedUpdate(true);
     }
 
     return (
-      <Card style={{ width: 500 }}>
+      <Card className="todo_item_card">
         <Flex gap="medium" justify="space-between">
           <Checkbox
             checked={item.isDone}
@@ -106,9 +81,9 @@ export default function TodoItem({ fetchData, item, setIsNeedUpadete }: TodoItem
                   setInputValue(changedValues.editTask);
                 }
               }}
-              style={{ flex: 1 }}
+              className="todo_item_form"
             >
-              <Flex gap="small" align="flex-end" justify="space-between" style={{ width: '100%' }}>
+              <Flex gap="small" align="flex-end" justify="space-between" className="todo_item_inputs">
                 <Form.Item
                   name="editTask"
                   validateTrigger="onBlur"
@@ -118,7 +93,8 @@ export default function TodoItem({ fetchData, item, setIsNeedUpadete }: TodoItem
                     { required: true, message: 'Заполните поле' },
                     { whitespace: true, message: 'Поле должно состоять из символов' }
                   ]}
-                  style={{ marginBottom: 0, flex: 1 }}
+                  
+                  className="todo_item_input_edit"
                 >
                   <Input type="text" />
                 </Form.Item>

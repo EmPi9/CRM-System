@@ -1,14 +1,19 @@
 import { MetaResponse, Filters, Todo, TodoInfo } from '../types/todos.models.types'
-import axios from 'axios';
+import axios, { AxiosResponse }  from 'axios';
 
 const API_URL = 'https://easydev.club/api/v1'
 
-export interface RequestBody {
+interface RequestBody {
     title?: string;
     isDone?: boolean;
 }
 
-export const apiClient = axios.create({
+type EditTaskBody = {
+    title: string,
+    isDone: boolean
+}
+
+const apiClient = axios.create({
     baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json',
@@ -27,28 +32,23 @@ export async function addTask(title: string) {
             '/todos',
             payload
         )
-
+        
         return response.data;
 }
 
 
-export async function deleteTask(taskId: number){
+export async function deleteTask(taskId: number): Promise<string> {
         const response = await apiClient.delete(
             `/todos/${taskId}`
         )
 
         return response.data;
-   
 }
 
-export async function editTask(taskId: number, title: string, isDone: boolean) {
+export async function editTask(taskId: number, title: string, isDone: boolean): Promise<Todo | string> {
+        const editBodyRequest: EditTaskBody = { title, isDone };
 
-        const editBodyRequest = {
-            title,
-            isDone
-        }
-
-        const response = await apiClient.put(
+        const response = await apiClient.put<Todo, AxiosResponse<Todo>>(
             `/todos/${taskId}`,
             editBodyRequest
         )
@@ -57,7 +57,7 @@ export async function editTask(taskId: number, title: string, isDone: boolean) {
 
 }
 
-export async function getTodos(filter: Filters) {
+export async function getTodos(filter: Filters): Promise<Todo |string>  {
 
         const response = await apiClient.get(
             `/todos`, {
@@ -66,8 +66,7 @@ export async function getTodos(filter: Filters) {
                 }
             }
         )
-        
-    
+
         return response.data;
 
 } 

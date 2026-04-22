@@ -1,7 +1,7 @@
 import React from 'react';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
-import { useNavigate, useLocation } from 'react-router';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -26,8 +26,7 @@ const AsideMenu: React.FC = () => {
 
     return (
       <Menu
-        style={{ width: 256, position: 'absolute'}}
-        defaultSelectedKeys={['/']}
+        className='menu'
         selectedKeys={[selectedKey]}
         mode="inline"
         items={items}

@@ -2,29 +2,23 @@ import { addTask } from '../api/todos'
 import { Flex, Form, Button, Input } from 'antd'
 import { useForm } from 'antd/es/form/Form';
 import { AxiosError } from 'axios';
-import { openNotification } from '../helper/notification'
-export interface FetchDataProps {
+import { handleApiError } from '../helper/handleApiError'
+interface FetchData {
     fetchData: () => Promise<void>;
 }
 
-export default function AddTask({ fetchData }: FetchDataProps) {
+export default function AddTask({ fetchData }: FetchData) {
     const [form] = useForm()
 
-    const handleSubmit = async (values: { nameTask: string }) => {
+    const handleSubmit = async (values: { todo: string }): Promise<void> => {
         try {
-            await addTask(values.nameTask);
+            await addTask(values.todo);
             form.resetFields();
+            await fetchData();
         } catch(error: AxiosError) {
-            if(error.response.status == 400){
-                openNotification('Ошибка', 'Недопустимое отсутствующие/некорректные поля.')
-            }
-            if(error.response.status == 500){
-                openNotification('Ошибка', 'Внутренняя ошибка сервера.')
-            }
+            handleApiError(error);
             return          
         }
-
-        await fetchData();
     }
 
     return (
@@ -32,7 +26,7 @@ export default function AddTask({ fetchData }: FetchDataProps) {
             <Flex gap="medium" justify="center">
                 <Form.Item
                     validateFirst
-                    name="nameTask"
+                    name="todo"
                     validateTrigger="onBlur"
                     rules={[
                         { max: 64, message: 'Максимум 64 символа'},

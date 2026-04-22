@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { Space } from 'antd'
 import { getTodos } from '../api/todos'
 import AddTask from "../components/AddTask";
 import FilterTask from "../components/FilterTask";
 import ListTasks from "../components/ListTasks";
-import AsideMenu from "../components/AsideMenu"
 import { AxiosError } from 'axios';
-import { openNotification } from '../helper/notification'
+import { handleApiError } from '../helper/handleApiError'
 import { MetaResponse, Filters, Todo, TodoInfo } from "../types/todos.models.types"
 
 export default function TodoListPage() {
@@ -15,25 +14,26 @@ export default function TodoListPage() {
         info: { all: 0, completed: 0, inWork: 0 },
         meta: { totalAmount: 0 } })
     const [filter, setFilter] = useState<Filters>('all')
-    const [isNeedUpdate, setIsNeedUpadete] = useState<boolean>(true)
-
-    const fetchData = async () => {
-        try {
-            const data = await getTodos(filter);
-            setTodos(data);
-        } catch(error: AxiosError) {
-            if(error.response.status == 400){
-                openNotification('Ошибка', 'Недопустимое отсутствующие/некорректные поля.')
-            }
-            if(error.response.status == 500){
-                openNotification('Ошибка', 'Внутренняя ошибка сервера.')
-            }
-            return             
-        }
-    }
+    const [isNeedUpdate, setIsNeedUpdate] = useState<boolean>(true)
+    const filterRef = useRef<Filters>(filter);
 
     useEffect(() => {
+        filterRef.current = filter;
         fetchData();
+    }, [filter])
+
+
+    const fetchData = useCallback(async (): Promise<void> => {
+        try {
+            const data = await getTodos(filterRef.current);
+            setTodos(data);
+        } catch(error: AxiosError) {
+            handleApiError(error)
+            return             
+        }
+    }, [])
+
+    useEffect(() => {
         if(isNeedUpdate === true){
             
             const intervalId = setInterval(() => {
@@ -43,15 +43,13 @@ export default function TodoListPage() {
             return () => clearInterval(intervalId);
         }
 
-    }, [filter, isNeedUpdate])
-
+    }, [isNeedUpdate])
 
     return <>
-            <AsideMenu />
-            <Space orientation="vertical" size="medium" style={{ display: 'flex', alignItems: 'center' }}>
+            <Space orientation="vertical" size="medium" className="main">
                 <AddTask fetchData={fetchData} />
                 <FilterTask filter={filter} todos={todos} setFilter={setFilter} />
-                <ListTasks fetchData={fetchData} todos={todos} setIsNeedUpadete={setIsNeedUpadete}  />
+                <ListTasks fetchData={fetchData} todos={todos} setIsNeedUpdate={setIsNeedUpdate}  />
             </Space>
     </>
 }
