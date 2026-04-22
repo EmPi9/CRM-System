@@ -1,8 +1,12 @@
-import { Flex, Typography } from "antd"
-export default function Hello() {
+import { Flex } from "antd"
+import ViewProfile from "../components/ViewProfile"
+import AuthorizationForm from "../components/AuthorizationForm"
+
+export default function ProfilePage() {
     return (
         <Flex justify="center">
-            <Typography.Title level={1}>Привет!</Typography.Title>
+            <ViewProfile />
+            <AuthorizationForm />
         </Flex>
     )
 }

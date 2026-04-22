@@ -1,5 +1,6 @@
 .menu {
     width: 256px;
+    position: absolute;
 }
 
 .todo_item_card {
@@ -24,7 +25,19 @@
     align-items: center;
 }
 
-.app {
+.registration_block {
     display: flex;
-    gap: 25%;
+    align-items: center;
+}
+
+.registration_form {
+    width: 500px;
+}
+
+.authorization_block {
+    margin-right: 190px;
+}
+
+.link_registration {
+    padding-top: 50%;
 }

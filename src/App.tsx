@@ -3,6 +3,8 @@ import ProfilePage from './pages/ProfilePage'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AsideMenu from './components/AsideMenu';
 import './App.css'; 
+import RegistrationPage from './pages/RegistrationPage'
+import AuthorizationPage from './pages/AuthorizationPage'
 
 function App() {
 
@@ -13,6 +15,8 @@ function App() {
         <Routes>
           <Route path="/" element={<TodoListPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/registration" element={<RegistrationPage />} />
+          <Route path="/authorization" element={<AuthorizationPage />} />
         </Routes>
       </div>
     </Router>

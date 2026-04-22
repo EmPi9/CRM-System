@@ -32,7 +32,7 @@ export async function addTask(title: string) {
             '/todos',
             payload
         )
-        
+
         return response.data;
 }
 
@@ -66,7 +66,6 @@ export async function getTodos(filter: Filters): Promise<Todo |string>  {
                 }
             }
         )
-
         return response.data;
 
 } 
