@@ -32,7 +32,7 @@ export default function ViewProfile() {
             } catch (err: AxiosError) {
                 if(err.response.status == 401) {
                     console.log('zxc')
-                    navigate('/authorization')
+                    navigate('/authorization', { replace: true })
                 }
             }
         }
