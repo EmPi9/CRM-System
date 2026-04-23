@@ -27,8 +27,7 @@ export const apiClient = axios.create({
     baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json',
-    },
-    withCredentials: true,
+    }
 });
 
 
@@ -70,7 +69,7 @@ export async function authorizationUser (
     )
 
     document.cookie = `refreshToken=${response.data.refreshToken}; path=/; max-age=2592000;`;
-    document.cookie = `accessToken=${response.data.accessToken}; path=/;  max-age=0;`;
+    document.cookie = `accessToken=${response.data.accessToken}; path=/;  max-age=2592000;`;
 
     return response.data
 
@@ -93,7 +92,6 @@ export default async function getUserProfile() {
         await refreshToken();
 
         const accessToken = getCookie('accessToken');
-
         const retryResponse = await apiClient.get(
             '/user/profile',{
               headers: {
@@ -113,8 +111,7 @@ export async function refreshToken() {
 
         const response = await apiClient.post(
             '/auth/refresh',
-            { refreshToken }, 
-            { withCredentials: true }
+            { refreshToken }
         )
         
 
@@ -125,7 +122,40 @@ export async function refreshToken() {
     } catch(error) {
         throw error;
     }
+}
+
+export async function logout() {
+
+    try {
+        const accessToken = getCookie('accessToken');
+        console.log(accessToken);
+        const response = await apiClient.post(
+                '/user/logout',{
+                  headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                  }
+                }
+            )
+        
+        return response.data
+    } catch(e: AxiosError) {
+        await refreshToken();
+
+        const accessToken = getCookie('accessToken');
+        const retryResponse = await apiClient.post(
+            '/user/logout',
+            {},
+            {
+              headers: {
+                'Authorization': `Bearer ${accessToken}`
+              }
+            }
+        )
+
+        
+        return retryResponse.data
+       
+    }
+
     
-
-
 }

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import getUserProfile from '../api/users'
+import getUserProfile, { logout } from '../api/users'
 import { Typography, Space } from 'antd';
 import { useNavigate } from 'react-router';
 import { AxiosError } from 'axios';
+import { Button } from 'antd'
+import { handleApiError } from '../helper/handleApiError'
 
 type Role = ADMIN | USER | MODERATOR;
 
@@ -29,6 +31,7 @@ export default function ViewProfile() {
                 setProfileData(data);
             } catch (err: AxiosError) {
                 if(err.response.status == 401) {
+                    console.log('zxc')
                     navigate('/authorization')
                 }
             }
@@ -36,6 +39,16 @@ export default function ViewProfile() {
 
         fetchProfile();
     }, [])
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            await navigate('/authorization');
+        } catch(err: AxiosError) {
+            handleApiError(err);
+            return  
+        }
+    }
 
 
     return ( <>
@@ -46,6 +59,8 @@ export default function ViewProfile() {
         <Text>Электронная почта: { profileData?.email }</Text>
 
         { profileData?.phoneNumber ? <Text>Номер телефона: { profileData?.phoneNumber }</Text> : '' } 
+
+        <Button onClick={() => handleLogout()} type='primary'>Выйти из аккаунта</Button>
     </Space>
     </>
     )
