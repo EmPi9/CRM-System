@@ -1,17 +1,39 @@
 import TodoListPage from './pages/TodoListPage'
 import ProfilePage from './pages/ProfilePage'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useNavigate, Routes, Route } from 'react-router-dom';
 import AsideMenu from './components/AsideMenu';
 import './App.css'; 
 import RegistrationPage from './pages/RegistrationPage'
 import AuthorizationPage from './pages/AuthorizationPage'
+import { useEffect } from 'react';
+import { tokenManager } from './helper/tokenManager';
+import { refreshToken } from './api/users'
+import { selectIsAuthorized } from './store/authSelectors';
+import { useSelector } from "react-redux"
 
 function App() {
+  
+  const navigate = useNavigate();
+  const isAuthorized = useSelector(selectIsAuthorized);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = tokenManager.getRefreshToken();
+
+      if(!token) {
+        navigate('/authorization')
+        return
+      }
+
+      await refreshToken();
+    }
+
+    checkAuth();
+    }, [])
 
   return (
-      <Router>
       <div className='app'>
-        <AsideMenu />
+        { isAuthorized ? <AsideMenu /> : ''}
         <Routes>
           <Route path="/" element={<TodoListPage />} />
           <Route path="/profile" element={<ProfilePage />} />
@@ -19,7 +41,6 @@ function App() {
           <Route path="/authorization" element={<AuthorizationPage />} />
         </Routes>
       </div>
-    </Router>
   )
 }
 

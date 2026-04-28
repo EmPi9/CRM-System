@@ -10,7 +10,7 @@ import { handleApiError } from '../helper/handleApiError'
 export default function RegistrationForm(){
     const navigate = useNavigate();
     const [form] = useForm()
-    const { Title } = Typography;
+    const { Title, Text, Link } = Typography;
     const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
     
 
@@ -117,6 +117,9 @@ export default function RegistrationForm(){
               </Form.Item>
 
             <Button htmlType="submit">Зарегистрироваться</Button>
+            <Flex gap={10} justify='center' className='link_authorization'>
+              <Text>Уже есть аккаунт?</Text><Link onClick={() => navigate('/authorization')}>Aвторизоваться</Link>
+            </Flex>
         </Form>
     )
 }

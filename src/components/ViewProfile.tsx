@@ -26,15 +26,8 @@ export default function ViewProfile() {
 
     useEffect(() => {
         async function fetchProfile() {
-            try {
-                const data = await getUserProfile();
-                setProfileData(data);
-            } catch (err: AxiosError) {
-                if(err.response.status == 401) {
-                    console.log('zxc')
-                    navigate('/authorization', { replace: true })
-                }
-            }
+            const data = await getUserProfile();
+            setProfileData(data);
         }
 
         fetchProfile();

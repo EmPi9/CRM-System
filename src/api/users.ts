@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { AxiosError } from 'axios';
+import { tokenManager } from '../helper/tokenManager';
+import { setAuthorized, logoutAuth } from '../store/authSlice'
+import { store } from '../store';
 
 const API_URL = import.meta.env.PROD 
   ? import.meta.env.VITE_API_BASE + '/api/v1' 
@@ -18,19 +20,58 @@ interface UserAuthorization {
   password: string;
 }
 
-function getCookie(name: string) {
-  let matches = document.cookie.match(new RegExp(
-    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-  ));
-  return matches ? decodeURIComponent(matches[1]) : undefined;
-}
-
-export const apiClient = axios.create({
+const apiClient = axios.create({
     baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json',
     }
 });
+
+apiClient.interceptors.request.use(config => {
+    const accessToken = tokenManager.getAccessToken();
+    
+    if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`
+    }
+
+    return config
+})
+
+apiClient.interceptors.response.use(
+    res => res,
+    async error => {
+        const original = error.config;
+
+        if(error.response?.status === 401 && !original._retry){
+            original._retry = true
+
+            try {
+                const refreshToken = tokenManager.getRefreshToken();
+                if(!refreshToken){
+                    throw new Error('Нет рефреш токена');
+                }
+
+                const { data } = await axios.post(
+                    '/auth/refresh',
+                    { refreshToken }
+                )
+
+                tokenManager.setAccessToken(data.accessToken);
+                tokenManager.setRefreshToken(data.refreshToken);
+
+                original.headers.Authotization = `Bearer ${data.accessToken}`;
+                return apiClient(original);
+                
+            } catch {
+                tokenManager.clearToken();
+                
+
+                return Promise.reject(error); 
+            }
+        }
+        return Promise.reject(error);
+    }
+)
 
 
 export async function registrationUser(
@@ -70,94 +111,62 @@ export async function authorizationUser (
         payload
     )
 
-    document.cookie = `refreshToken=${response.data.refreshToken}; path=/; max-age=2592000;`;
-    document.cookie = `accessToken=${response.data.accessToken}; path=/;  max-age=2592000;`;
+    tokenManager.setAccessToken(response.data.accessToken);
+    tokenManager.setRefreshToken(response.data.refreshToken);
+    store.dispatch(setAuthorized(true));
 
     return response.data
 
 }
 
 export default async function getUserProfile() {
-    try {
-        const accessToken = getCookie('accessToken');
-        const response = await apiClient.get(
-            '/user/profile',{
-              headers: {
-                'Authorization': `Bearer ${accessToken}`
-              }
-            }
-        )
 
-        return response.data
+    const accessToken = tokenManager.getAccessToken();
+    const response = await apiClient.get(
+        '/user/profile',{
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        }
+    )
 
-    } catch(e: AxiosError) {
-        await refreshToken();
-
-        const accessToken = getCookie('accessToken');
-        const retryResponse = await apiClient.get(
-            '/user/profile',{
-              headers: {
-                'Authorization': `Bearer ${accessToken}`
-              }
-            }
-        )
-
-        return retryResponse.data
-       
-    }
+    return response.data
 }
 
 export async function refreshToken() {
-    try {
-        const refreshToken = getCookie('refreshToken')
 
-        const response = await apiClient.post(
-            '/auth/refresh',
-            { refreshToken }
-        )
-        
+    const refreshToken = tokenManager.getRefreshToken();
 
-        document.cookie = `refreshToken=${response.data.refreshToken}; path=/; max-age=2592000;`;
-        document.cookie = `accessToken=${response.data.accessToken}; path=/; max-age=2592000;` ;
+    await apiClient.post(
+        '/auth/refresh',
+        { refreshToken }
+    )
+    .then(({data}) => {
+        tokenManager.setAccessToken(data.accessToken);
+        tokenManager.setRefreshToken(data.refreshToken);
+        store.dispatch(setAuthorized(true));
+    })
+    .catch(() => {
+        tokenManager.clearToken();
+        store.dispatch(logoutAuth())
+    })
 
-        return response.data.accessToken 
-    } catch(error) {
-        throw error;
-    }
+    return
 }
 
 export async function logout() {
 
-    try {
-        const accessToken = getCookie('accessToken');
-        console.log(accessToken);
-        const response = await apiClient.post(
-                '/user/logout',{
-                  headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                  }
-                }
-            )
-        
-        return response.data
-    } catch(e: AxiosError) {
-        await refreshToken();
-
-        const accessToken = getCookie('accessToken');
-        const retryResponse = await apiClient.post(
-            '/user/logout',
-            {},
-            {
+    const accessToken = tokenManager.getAccessToken();
+    const response = await apiClient.post(
+            '/user/logout', {
               headers: {
                 'Authorization': `Bearer ${accessToken}`
               }
             }
         )
-
         
-        return retryResponse.data
-       
-    }
+    store.dispatch(logoutAuth())
+    tokenManager.clearToken()
+    return response.data
 
-    
 }
