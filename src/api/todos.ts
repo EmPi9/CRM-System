@@ -1,92 +1,72 @@
-const API_URL = 'https://easydev.club/api/v1'
-import { MetaResponse, FilterProps, Todo, TodoInfo } from '../types/components.types'
+import { MetaResponse, Filters, Todo, TodoInfo } from '../types/todos.models.types'
+import axios, { AxiosResponse }  from 'axios';
 
-export interface RequestBody {
+const API_URL = 'https://easydev.club/api/v1'
+
+interface RequestBody {
     title?: string;
     isDone?: boolean;
 }
 
-export async function addTask(title: string): Promise<MetaResponse<Todo, TodoInfo>> {
-    try {
+type EditTaskBody = {
+    title: string,
+    isDone: boolean
+}
+
+const apiClient = axios.create({
+    baseURL: API_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+
+
+export async function addTask(title: string) {
         const payload: RequestBody = {
             title,
             isDone: false
         };
 
-        const response = await fetch(`${API_URL}/todos`, {
-            method: "POST", 
-            headers: { "Content-Type": "application/json" }, 
-            body: JSON.stringify(payload) 
-        })
-
-        if(response.ok){
-            const data: MetaResponse<Todo, TodoInfo> = await response.json();
-            return data;
-        } else {
-            throw new Error(`HTTP error ${response.status}`);
-        }     
-
-    } catch (error) {     
-        throw error;
-    }
-}
-
-export async function deleteTask(taskId: number){
-    try {
-        const response = await fetch(`${API_URL}/todos/${taskId}`, {
-        method: "DELETE", 
-        })
-
-        if(response.ok){
-            return
-        } else {
-            throw new Error(`HTTP error ${response.status}`);
-        }
-
-    } catch (error) {
-        throw error;
-    }
-}
-
-export async function editTask(taskId: number, title: string, isDone: boolean) {
-    try {
-        const response = await fetch(`${API_URL}/todos/${taskId}`, {
-        method: "PUT",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            title: title,
-            isDone: isDone,
-            })
-        })
-
-        if(response.ok){
-            return
-        } else {
-            throw new Error(`HTTP error ${response.status}`);
-        }
-
-    } catch (error) {
-        throw error;
-    }
-}
-
-export async function getTodos(filter: FilterProps): Promise<MetaResponse<Todo, TodoInfo>> {
-    try {
-        const response = await fetch(`${API_URL}/todos?filter=${filter}`, {
-            method: "GET", 
-            })
+        const response = await apiClient.post<MetaResponse<Todo, TodoInfo>>(
+            '/todos',
+            payload
+        )
         
-        if(response.ok){
-            const data: MetaResponse<Todo, TodoInfo> = await response.json();
-            return data;
-        } else {
-            throw new Error(`HTTP error ${response.status}`);
-        } 
-        
-    } catch (error) {
+        return response.data;
+}
 
-        throw error;
-    }
+
+export async function deleteTask(taskId: number): Promise<string> {
+        const response = await apiClient.delete(
+            `/todos/${taskId}`
+        )
+
+        return response.data;
+}
+
+export async function editTask(taskId: number, title: string, isDone: boolean): Promise<Todo | string> {
+        const editBodyRequest: EditTaskBody = { title, isDone };
+
+        const response = await apiClient.put<Todo, AxiosResponse<Todo>>(
+            `/todos/${taskId}`,
+            editBodyRequest
+        )
+
+        return response.data;
+
+}
+
+export async function getTodos(filter: Filters): Promise<Todo |string>  {
+
+        const response = await apiClient.get(
+            `/todos`, {
+                params: {
+                    filter: filter
+                }
+            }
+        )
+
+        return response.data;
+
 } 

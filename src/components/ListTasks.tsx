@@ -1,18 +1,21 @@
 import TodoItem from "./TodoItem"
-import { FetchDataProp, Todo, MetaResponse, TodoInfo } from "../../src/types/components.types"
+import { FetchDataProp, Todo, MetaResponse, TodoInfo } from "../types/todos.models.types"
+import { Flex } from 'antd'
+import { Dispatch, SetStateAction } from "react";
 
-export interface ListTaskProps {
+interface ListTaskProps {
     fetchData: FetchDataProp, 
     todos: MetaResponse<Todo, TodoInfo>
+    setIsNeedUpdate: Dispatch<SetStateAction<boolean>>,
 }
 
-export default function ListTasks({ fetchData, todos }: ListTaskProps) {
+export default function ListTasks({ fetchData, todos, setIsNeedUpdate }: ListTaskProps) {
     return (
-        <div className="container">
+        <Flex gap="medium" justify="center" vertical>
            {todos.data.map(item => {
             return (
-                <TodoItem key={item.id} fetchData={fetchData} item={item}  />
+                <TodoItem key={item.id} fetchData={fetchData} item={item} setIsNeedUpdate={setIsNeedUpdate}  />
             )})}
-        </div>
+        </Flex>
     )
 }

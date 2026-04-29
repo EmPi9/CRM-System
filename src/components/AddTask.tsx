@@ -1,58 +1,44 @@
-import { useState } from "react" 
 import { addTask } from '../api/todos'
-import validateInput from '../helpers/validateInput'
-import Button from "../ui/Button/Button"
-import Input from "../ui/Input/Input"
-
-export interface FetchDataProps {
+import { Flex, Form, Button, Input } from 'antd'
+import { useForm } from 'antd/es/form/Form';
+import { AxiosError } from 'axios';
+import { handleApiError } from '../helper/handleApiError'
+interface FetchData {
     fetchData: () => Promise<void>;
 }
 
-export default function AddTask({ fetchData }: FetchDataProps) {
-    const [taskTitle, setTaskTitle] = useState<string>('')
+export default function AddTask({ fetchData }: FetchData) {
+    const [form] = useForm()
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTaskTitle(e.target.value)
-    }
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleSubmit = async (values: { todo: string }): Promise<void> => {
         try {
-            const validate = validateInput(taskTitle);
-     
-            if(validate === 'spaces'){
-                alert("Ошибка валидации. Введите пожалуйста название задачи заново.");
-                return 
-            }
-            if (validate === '<2') {
-                alert("Минимальная длина текста 2 символа");
-                return 
-            } else if (validate === '>64') {
-                alert("Максимальная длина текста 64 символа");
-                return 
-            }
-
-            try {
-                await addTask(taskTitle);
-            } catch(error) {             
-                alert('Ошибка работы сервера.')
-                return          
-            }
-
+            await addTask(values.todo);
+            form.resetFields();
             await fetchData();
-            setTaskTitle('');
-        } catch {
-
+        } catch(error: AxiosError) {
+            handleApiError(error);
+            return          
         }
     }
 
-
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="container">
-                <Input onChange={handleInputChange} value={taskTitle} placeholder="Задача" />
-                <Button type="submit">Создать</Button>
-            </div>
-        </form>
+        <Form onFinish={handleSubmit} form={form}>
+            <Flex gap="medium" justify="center">
+                <Form.Item
+                    validateFirst
+                    name="todo"
+                    validateTrigger="onBlur"
+                    rules={[
+                        { max: 64, message: 'Максимум 64 символа'},
+                        { min: 2, message: 'Минимум 2 символа'},
+                        { required: true, message: 'Заполните поле'},
+                        { whitespace: true, message: 'Поле должно состоять из символов'}
+                    ]}
+                >
+                    <Input variant="underlined" size='medium' placeholder="Задача" />
+                </Form.Item>
+                <Button type="primary" htmlType="submit">Создать</Button>
+            </Flex>
+        </Form>
     )
 }
