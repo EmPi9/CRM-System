@@ -1,29 +1,25 @@
 import axios from 'axios';
 import { tokenManager } from '../helper/tokenManager';
-import { setAuthorized, logoutAuth } from '../store/authSlice'
-import { store } from '../store';
+import { selectIsAuthorized } from '../store/authSelectors';
+import { useSelector } from "react-redux"
+import { UserRegistration } from '../types/users.models.types'
 
 const API_URL = import.meta.env.PROD 
   ? import.meta.env.VITE_API_BASE + '/api/v1' 
   : '/api/v1';
-
-interface UserRegistration { 
-  login: string; 
-  username: string; 
-  password: string; 
-  email: string; 
-  phoneNumber?: string; 
-}
 
 interface UserAuthorization { 
   login: string; 
   password: string;
 }
 
+const accessToken = tokenManager.getAccessToken();
+
 const apiClient = axios.create({
     baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
     }
 });
 
@@ -46,8 +42,9 @@ apiClient.interceptors.response.use(
             original._retry = true
 
             try {
-                const refreshToken = tokenManager.getRefreshToken();
-                if(!refreshToken){
+                const isAuthorized = useSelector(selectIsAuthorized);
+
+                if(isAuthorized === false){
                     throw new Error('Нет рефреш токена');
                 }
 
@@ -74,7 +71,7 @@ apiClient.interceptors.response.use(
 )
 
 
-export async function registrationUser(
+export async function registerUser(
     login: string, 
     username: string, 
     password: string, 
@@ -97,7 +94,7 @@ export async function registrationUser(
     return response.data
 }
 
-export async function authorizationUser (
+export async function authorizeUser (
     login: string, 
     password: string, 
 ) {
@@ -111,23 +108,14 @@ export async function authorizationUser (
         payload
     )
 
-    tokenManager.setAccessToken(response.data.accessToken);
-    tokenManager.setRefreshToken(response.data.refreshToken);
-    store.dispatch(setAuthorized(true));
-
     return response.data
 
 }
 
 export default async function getUserProfile() {
 
-    const accessToken = tokenManager.getAccessToken();
     const response = await apiClient.get(
-        '/user/profile',{
-          headers: {
-            'Authorization': `Bearer ${accessToken}`
-          }
-        }
+        '/user/profile',
     )
 
     return response.data
@@ -141,32 +129,16 @@ export async function refreshToken() {
         '/auth/refresh',
         { refreshToken }
     )
-    .then(({data}) => {
-        tokenManager.setAccessToken(data.accessToken);
-        tokenManager.setRefreshToken(data.refreshToken);
-        store.dispatch(setAuthorized(true));
-    })
-    .catch(() => {
-        tokenManager.clearToken();
-        store.dispatch(logoutAuth())
-    })
 
     return
 }
 
 export async function logout() {
 
-    const accessToken = tokenManager.getAccessToken();
     const response = await apiClient.post(
-            '/user/logout', {
-              headers: {
-                'Authorization': `Bearer ${accessToken}`
-              }
-            }
+            '/user/logout',
         )
-        
-    store.dispatch(logoutAuth())
-    tokenManager.clearToken()
+
     return response.data
 
 }

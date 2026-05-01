@@ -24,8 +24,7 @@ export default function TodoItem({ fetchData, item, setIsNeedUpdate }: Props) {
             await deleteTask(taskId);
             await fetchData();
         } catch(error: AxiosError) {
-            handleApiError(error);
-            return            
+            handleApiError(error);            
         }
     }
     
@@ -39,8 +38,7 @@ export default function TodoItem({ fetchData, item, setIsNeedUpdate }: Props) {
         try {
             await editTask(taskId, values.editTask, taskDone);
         } catch(error: AxiosError) {
-            handleApiError(error)
-            return            
+            handleApiError(error)            
         }
         setIsEditing(false)
         setIsNeedUpdate(true);
@@ -53,8 +51,7 @@ export default function TodoItem({ fetchData, item, setIsNeedUpdate }: Props) {
             await editTask(taskId, taskTitle, taskDone);
             await fetchData();
         } catch(error: AxiosError) {
-            handleApiError(error)
-            return            
+            handleApiError(error)            
         }
         
     }

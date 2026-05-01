@@ -1,11 +1,14 @@
 import { Flex, Card, Form, Button, Input, Typography } from 'antd'
 import AuthPhoto from '../assets/illustration.jpg'
 import AuthLogo from '../assets/logo.jpg'
-import { authorizationUser } from '../api/users';
+import { authorizeUser } from '../api/users';
 import { useForm } from 'antd/es/form/Form';
 import { AxiosError } from 'axios';
 import { handleApiError } from '../helper/handleApiError'
 import { useNavigate } from 'react-router';
+import { tokenManager } from '../helper/tokenManager';
+import { store } from '../store';
+import { setAuthorized } from '../store/authSlice'
 
 const { Title, Text, Link } = Typography;
  
@@ -15,10 +18,12 @@ export default function AuthorizationForm() {
 
     const handleSubmit = async (values: { login: string, password: string }) => {
         try {
-            await authorizationUser(values.login, values.password)
+            const respose = await authorizeUser(values.login, values.password);
+            tokenManager.setAccessToken(respose.accessToken);
+            tokenManager.setRefreshToken(respose.refreshToken);
+            store.dispatch(setAuthorized(true));
         } catch(error: AxiosError) {
-            handleApiError(error);
-            return 
+            handleApiError(error); 
         }
         form.resetFields();
         navigate('/');

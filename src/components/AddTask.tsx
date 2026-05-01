@@ -16,8 +16,7 @@ export default function AddTask({ fetchData }: FetchData) {
             form.resetFields();
             await fetchData();
         } catch(error: AxiosError) {
-            handleApiError(error);
-            return          
+            handleApiError(error);          
         }
     }
 

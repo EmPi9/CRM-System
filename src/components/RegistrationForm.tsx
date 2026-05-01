@@ -1,5 +1,5 @@
-import { Form, Input, Typography, Flex, Button } from "antd";
-import { registrationUser } from '../api/users'
+import { Form, Input, Typography, Flex, Button, InputNumber } from "antd";
+import { registerUser } from '../api/users'
 import { useForm } from 'antd/es/form/Form';
 import { useState } from 'react'
 import { useNavigate } from 'react-router';
@@ -8,6 +8,7 @@ import { openNotification } from '../helper/notification'
 import { handleApiError } from '../helper/handleApiError'
 
 export default function RegistrationForm(){
+    const MAX_CHARACTERS_REGISTER = 60;
     const navigate = useNavigate();
     const [form] = useForm()
     const { Title, Text, Link } = Typography;
@@ -22,13 +23,13 @@ export default function RegistrationForm(){
         phoneNumber?: string  
     }) => {
       try {
-        await registrationUser(values.login, values.username, values.password, values.email, values.phoneNumber);
+        await registerUser(values.login, values.username, values.password, values.email, values.phoneNumber);
         setIsFormFilled(true)
         openNotification('Успешно', 'Регистрация прошла успешно. Для авторизации, перейдите на страницу авторизации для входа в систему')
         form.resetFields();
       } catch(error: AxiosError) {
         handleApiError(error);
-        return          
+          
       }
     }  
 
@@ -46,7 +47,7 @@ export default function RegistrationForm(){
             <Title level={2}>Регистрация</Title>
             <Form.Item label="Имя пользователя" name="username" rules={[
                 { required: true, message: 'Заполните пожалуйста поле' },
-                { max: 60, message: 'Максимум 60 символа' },
+                { max: MAX_CHARACTERS_REGISTER, message: `Максимум ${MAX_CHARACTERS_REGISTER} символа` },
                 { min: 1, message: 'Минимум 1 символа' },
                 ]}>
                 <Input />
@@ -54,7 +55,7 @@ export default function RegistrationForm(){
 
             <Form.Item label="Логин" name="login" rules={[
                 { required: true, message: 'Заполните пожалуйста поле' },
-                { max: 60, message: 'Максимум 60 символа' },
+                { max: MAX_CHARACTERS_REGISTER, message: `Максимум ${MAX_CHARACTERS_REGISTER} символа` },
                 { min: 2, message: 'Минимум 2 символа' },
                 { pattern: /^[a-zA-Z]+$/, message: 'Разрешены только латинские буквы'},
                 ]}>
@@ -63,7 +64,7 @@ export default function RegistrationForm(){
 
             <Form.Item label="Пароль" name="password" rules={[
                 { required: true, message: 'Заполните пожалуйста поле'},
-                { max: 60, message: 'Максимум 60 символа' },
+                { max: MAX_CHARACTERS_REGISTER, message: 'Максимум ${MAX_CHARACTERS_REGISTER} символа' },
                 { min: 6, message: 'Минимум 6 символа' },
 
                 ]}>
@@ -113,7 +114,7 @@ export default function RegistrationForm(){
                       },
                     ]}
               >
-                <Input />
+                <InputNumber  />
               </Form.Item>
 
             <Button htmlType="submit">Зарегистрироваться</Button>

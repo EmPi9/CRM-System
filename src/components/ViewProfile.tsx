@@ -5,8 +5,10 @@ import { useNavigate } from 'react-router';
 import { AxiosError } from 'axios';
 import { Button } from 'antd'
 import { handleApiError } from '../helper/handleApiError'
-
-type Role = ADMIN | USER | MODERATOR;
+import { tokenManager } from '../helper/tokenManager';
+import { store } from '../store';
+import { logoutAuth } from '../store/authSlice'
+import { Role } from '../types/users.models.types'
 
 interface Profile { 
   id: number; 
@@ -37,9 +39,10 @@ export default function ViewProfile() {
         try {
             await logout();
             await navigate('/authorization');
+            store.dispatch(logoutAuth())
+            tokenManager.clearToken()
         } catch(err: AxiosError) {
-            handleApiError(err);
-            return  
+            handleApiError(err);  
         }
     }
 

@@ -6,7 +6,6 @@ import './App.css';
 import RegistrationPage from './pages/RegistrationPage'
 import AuthorizationPage from './pages/AuthorizationPage'
 import { useEffect } from 'react';
-import { tokenManager } from './helper/tokenManager';
 import { refreshToken } from './api/users'
 import { selectIsAuthorized } from './store/authSelectors';
 import { useSelector } from "react-redux"
@@ -15,21 +14,20 @@ function App() {
   
   const navigate = useNavigate();
   const isAuthorized = useSelector(selectIsAuthorized);
-
+    
   useEffect(() => {
     const checkAuth = async () => {
-      const token = tokenManager.getRefreshToken();
+    
+        if(isAuthorized === false) {
+          navigate('/authorization')
+          return
+        }
 
-      if(!token) {
-        navigate('/authorization')
-        return
-      }
-
-      await refreshToken();
+        await refreshToken();
     }
 
     checkAuth();
-    }, [])
+  }, [])
 
   return (
       <div className='app'>
