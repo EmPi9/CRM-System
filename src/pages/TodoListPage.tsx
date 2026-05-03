@@ -28,8 +28,7 @@ export default function TodoListPage() {
             const data = await getTodos(filterRef.current);
             setTodos(data);
         } catch(error: AxiosError) {
-            handleApiError(error)
-            return             
+            handleApiError(error)             
         }
     }, [])
 
