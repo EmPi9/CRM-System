@@ -1,6 +1,5 @@
 .menu {
     width: 256px;
-    position: absolute;
 }
 
 .todo_item_card {
@@ -44,4 +43,22 @@
 
 .link_authorization {
     padding-top: 10px;
+}
+
+.profile_user_form_button {
+    margin-top: 12px;
+}
+
+.profile_user_search_input {
+    width: 256px;
+    height: 35px;
+    margin-bottom: 25px;
+}
+
+.profile_user_title {
+    margin: 0;
+}
+
+.table_user_select {
+    width: 100%;
 }
