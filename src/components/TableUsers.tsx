@@ -268,7 +268,7 @@ export function TableUsers() {
         }
     ];
 
-    const data = usersData?.data.map((user: any): DataType  => ({
+    const data = usersData?.data?.map((user: any): DataType  => ({
         key: user.id.toString(),
         username: user.username,
         email: user.email,
