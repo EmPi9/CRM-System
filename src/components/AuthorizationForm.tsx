@@ -1,14 +1,14 @@
 import { Flex, Card, Form, Button, Input, Typography } from 'antd'
 import AuthPhoto from '../assets/illustration.jpg'
 import AuthLogo from '../assets/logo.jpg'
-import { authorizeUser } from '../api/users';
+import { authorizeUser, getUserProfile } from '../api/users';
 import { useForm } from 'antd/es/form/Form';
 import { AxiosError } from 'axios';
 import { handleApiError } from '../helper/handleApiError'
 import { useNavigate } from 'react-router';
 import { tokenManager } from '../helper/tokenManager';
 import { store } from '../store';
-import { setAuthorized } from '../store/authSlice'
+import { setAuthorized, setIsAdmin, setIsModrator } from '../store/authSlice'
 
 const { Title, Text, Link } = Typography;
  
@@ -18,15 +18,26 @@ export default function AuthorizationForm() {
 
     const handleSubmit = async (values: { login: string, password: string }) => {
         try {
-            const respose = await authorizeUser(values.login, values.password);
-            tokenManager.setAccessToken(respose.accessToken);
-            tokenManager.setRefreshToken(respose.refreshToken);
+            const response = await authorizeUser(values.login, values.password);
+            tokenManager.setAccessToken(response.accessToken);
+            tokenManager.setRefreshToken(response.refreshToken);
             store.dispatch(setAuthorized(true));
+            const userRole = await getUserProfile();
+
+            userRole.roles.forEach((role: string) => {
+                if (role === 'ADMIN'){
+                    store.dispatch(setIsAdmin(true));
+                } 
+                if (role === 'MODERATOR') {
+                    store.dispatch(setIsModrator(true));
+                }
+            })
+           
+            form.resetFields();
+            await navigate('/');
         } catch(error: AxiosError) {
             handleApiError(error); 
         }
-        form.resetFields();
-        navigate('/');
         
     }
 
