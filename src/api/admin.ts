@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { tokenManager } from '../helper/tokenManager';
-import { User, MetaResponse } from '../types/admin.models.types'
+import { User, MetaResponse, UserFilters } from '../types/admin.models.types'
 
 const API_URL = import.meta.env.PROD 
   ? import.meta.env.VITE_API_BASE + '/api/v1' 
@@ -29,28 +29,12 @@ apiClient.interceptors.request.use(config => {
 
 
 
-export async function getAllUsers(
-    search?: string,
-    sortBy?: string,
-    sortOrder?: 'asc' | 'desc',
-    page?: number,
-    pageSize?: number,
-    isBlocked?: boolean | null
-): Promise<MetaResponse<User>> {
-
-
-    const payload = {
-        search,
-        sortBy,
-        sortOrder,
-        isBlocked,
-        pageSize,
-        page
-    }
+export async function getAllUsers(filters: UserFilters = {}): Promise<MetaResponse<User>> {
+  
     
     const response = await apiClient.get(
         '/admin/users',
-        { params: payload }
+        { params: filters }
     )
     
     return response.data

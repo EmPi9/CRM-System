@@ -21,7 +21,7 @@ const AsideMenu: React.FC = () => {
         children: [
           { key: '/', label: 'Список задач', onClick: () => navigate('/') },
           { key: '/profile', label: 'Профиль', onClick: () => navigate('/profile') },
-          isModerator || isAdmin ? { key: '/users', label: 'Пользователь', onClick: () => navigate('/users') } : null,
+          isModerator || isAdmin ? { key: '/users', label: 'Пользователи', onClick: () => navigate('/users') } : null,
         ],
       },
     ];

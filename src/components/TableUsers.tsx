@@ -27,7 +27,7 @@ export function TableUsers() {
     const [ sortBy, setSortBy ] = useState<string>('id');
     const [ sortOrder, setSortOrder ] = useState<"asc" | "desc" | undefined>("asc");
     const [ blocked, setBlocked ] = useState<string | undefined>('allUsers');
-    const [ isBlocked, setIsBlocked ] = useState<boolean | null>(null);
+    const [ isBlocked, setIsBlocked ] = useState<boolean | undefined>(undefined);
     const [ pagination, setPagination ] = useState({
         current: 1,
         pageSize: 20,
@@ -43,9 +43,9 @@ export function TableUsers() {
       { value: 'HUILA' },
     ];
 
-    const fetchUsers = useCallback(async (page: number, pageSize: number, filterValue: boolean | null) => {
+    const fetchUsers = useCallback(async (page: number, pageSize: number, filterValue: boolean ) => {
         try {
-            const response = await getAllUsers(search, sortBy, sortOrder, page - 1, pageSize, filterValue);
+            const response = await getAllUsers({ search: search,  sortBy: sortBy, sortOrder: sortOrder, page: page - 1, limit: pageSize, isBlocked: filterValue });
 
             setUsersData(response);
             setPagination(prev => ({
@@ -74,7 +74,7 @@ export function TableUsers() {
 
         const isBlocked = nextFilter === 'blockUsers' ? true 
             : nextFilter === 'activeUsers' ? false 
-            : null;
+            : undefined;
         
         setIsBlocked(isBlocked);
 
