@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { tokenManager } from '../helper/tokenManager';
-
+import { selectIsAuthorized } from '../store/authSelectors';
+import { useSelector } from "react-redux"
 import { UserRegistration } from '../types/users.models.types'
 
 const API_URL = import.meta.env.PROD 
@@ -31,6 +32,43 @@ apiClient.interceptors.request.use(config => {
 
     return config
 })
+
+apiClient.interceptors.response.use(
+    res => res,
+    async error => {
+        const original = error.config;
+
+        if(error.response?.status === 401 && !original._retry){
+            original._retry = true
+
+            try {
+                const isAuthorized = useSelector(selectIsAuthorized);
+
+                if(isAuthorized === false){
+                    throw new Error('Нет рефреш токена');
+                }
+
+                const { data } = await axios.post(
+                    '/auth/refresh',
+                    { refreshToken }
+                )
+
+                tokenManager.setAccessToken(data.accessToken);
+                tokenManager.setRefreshToken(data.refreshToken);
+
+                original.headers.Authotization = `Bearer ${data.accessToken}`;
+                return apiClient(original);
+                
+            } catch {
+                tokenManager.clearToken();
+                
+
+                return Promise.reject(error); 
+            }
+        }
+        return Promise.reject(error);
+    }
+)
 
 
 export async function registerUser(
@@ -74,7 +112,7 @@ export async function authorizeUser (
 
 }
 
-export async function getUserProfile() {
+export default async function getUserProfile() {
 
     const response = await apiClient.get(
         '/user/profile',
