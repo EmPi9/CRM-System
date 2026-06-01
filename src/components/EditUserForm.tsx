@@ -23,22 +23,27 @@ export function EditUserForm() {
     const [isEditing, setIsEditing] = useState<boolean>(false)
     const isAdmin = useSelector(selectIsAdmin);
 
-    useEffect(() => {
-        async function getUserInfo() {
-            try {
-                const userId = Number(id);
-                const response = await getUserById(userId);
-                setUser(response);
-            } catch(err: AxiosError) {
-                store.dispatch(logoutAuth())
-                tokenManager.clearToken()
-                await navigate('/authorization');
-                handleApiError(err);  
-            }
-        }
+    const formInitialValues = { 
+        username: user?.username,
+        email: user?.email,
+        phoneNumber: user?.phoneNumber
+    };
 
+    async function getUserInfo() {
+        try {
+            const userId = Number(id);
+            const response = await getUserById(userId);
+            setUser(response);
+        } catch(err: AxiosError) {
+            store.dispatch(logoutAuth())
+            tokenManager.clearToken()
+            await navigate('/authorization');
+            handleApiError(err);  
+        }
+    }
+
+    useEffect(() => {
         getUserInfo();
-        
     }, [id])
 
 
@@ -49,8 +54,15 @@ export function EditUserForm() {
     }
     ) => {
         try {
-            await editUserById(user.id, values.email, values.phoneNumber, values.username);
+            const payload = {
+                username: values.username === formInitialValues.username ? null : values.username,
+                email: values.email === formInitialValues.email ? null : values.email,
+                phoneNumber: values.phoneNumber === formInitialValues.phoneNumber ? null : values.phoneNumber,
+            };
+
+            await editUserById(user.id, payload.email, payload.phoneNumber, payload.username);
             setIsEditing(false);
+            getUserInfo();
         } catch(err: AxiosError) {
             handleApiError(err);  
         }
@@ -62,11 +74,7 @@ export function EditUserForm() {
 
             { isEditing ? (
                 <Form layout="vertical" form={form} onFinish={handleSubmit}
-                initialValues={{ 
-                    username: user?.username,
-                    email: user?.email,
-                    phoneNumber: user?.phoneNumber
-                }}
+                initialValues={formInitialValues}
             >
                 <Form.Item
                   label="Имя пользователя" 

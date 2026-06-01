@@ -51,11 +51,11 @@ export async function getUserById(id: number): Promise<User> {
 }
 
 export async function editUserById(
-    id: number,
-    email: string,
-    phoneNumber: string,
-    username: string,
-): Promise<User> {
+    id: number | null,
+    email: string | null,
+    phoneNumber: string | null,
+    username: string | null,
+): Promise<User | string> {
 
     const payload = {
         email,
@@ -81,7 +81,7 @@ export async function deleteUser(id: number): Promise<string> {
     return response.data
 }
 
-export async function blockUser(id: number): Promise<User> {
+export async function blockUser(id: number): Promise<User | string> {
 
     const response = await apiClient.post(
         `/admin/users/${id}/block`,
@@ -90,7 +90,7 @@ export async function blockUser(id: number): Promise<User> {
     return response.data
 }
 
-export async function unblockUser(id: number): Promise<User> {
+export async function unblockUser(id: number): Promise<User | string> {
 
     const response = await apiClient.post(
         `/admin/users/${id}/unblock`,
