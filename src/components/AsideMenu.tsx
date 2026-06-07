@@ -2,16 +2,16 @@ import React from 'react';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { selectIsAdmin, selectIsModerator } from '../store/authSelectors';
-import { useSelector } from "react-redux"
+import { isRole } from '../helper/isRole'
 
 type MenuItem = Required<MenuProps>['items'][number];
 
 const AsideMenu: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation(); 
-    const isModerator = useSelector(selectIsModerator);
-    const isAdmin = useSelector(selectIsAdmin);
+    const isAdmin = isRole('ADMIN');
+    const isModerator = isRole('MODERATOR');
+    
 
     const items: MenuItem[] = [
       {

@@ -4,26 +4,21 @@ const authSlice = createSlice({
     name: 'auth',
     initialState: { 
         isAuthorized: false,
-        isAdmin: false,
-        isModerator: false
+        roleUser: [''],
     },
     reducers: {
         setAuthorized: (state, action: PayloadAction<boolean>) => {
             state.isAuthorized = action.payload;
         },
-        setIsAdmin: (state, action: PayloadAction<boolean>) => {
-            state.isAdmin = action.payload;
-        },
-        setIsModrator: (state, action: PayloadAction<boolean>) => {
-            state.isModerator = action.payload;
+        setRoleUser: (state, action: PayloadAction<string[]>) => {
+            state.roleUser = action.payload;
         },
         logoutAuth: (state) => {
             state.isAuthorized = false;
-            state.isModerator = false;
-            state.isAdmin = false;
+            state.roleUser = [''];
         }
     }
 })
 
-export const { setAuthorized, setIsAdmin, setIsModrator, logoutAuth } = authSlice.actions;
+export const { setAuthorized, setRoleUser, logoutAuth } = authSlice.actions;
 export default authSlice.reducer;

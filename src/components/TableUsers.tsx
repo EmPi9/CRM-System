@@ -1,14 +1,11 @@
 import { useEffect, useState, ChangeEvent, useCallback } from 'react'
 import { getAllUsers, deleteUser, unblockUser, blockUser, updateUserRights } from '../api/admin'
-import { AxiosError } from 'axios';
-import { handleApiError } from '../helper/handleApiError'
 import { MetaResponse, User } from '../types/admin.models.types'
 import { Card, Space, Table, Typography, Button, Flex, Modal, Input, Select } from 'antd';
 import type { TableColumnsType, TablePaginationConfig } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRightOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons';
-import { selectIsAdmin, } from '../store/authSelectors';
-import { useSelector } from "react-redux"
+import { isRole } from '../helper/isRole'
 import type { SelectProps } from 'antd';
 
 interface DataType {
@@ -35,7 +32,7 @@ export function TableUsers() {
 
     const { Title } = Typography;
     const navigate = useNavigate();
-    const isAdmin = useSelector(selectIsAdmin);
+    const isAdmin = isRole('ADMIN');
     const options: SelectProps['options'] = [
       { value: 'ADMIN' },
       { value: 'MODERATOR' },
@@ -44,20 +41,15 @@ export function TableUsers() {
     ];
 
     const fetchUsers = useCallback(async (page: number, pageSize: number, filterValue: boolean ) => {
-        try {
-            const response = await getAllUsers({ search: search,  sortBy: sortBy, sortOrder: sortOrder, page: page - 1, limit: pageSize, isBlocked: filterValue });
+        const response = await getAllUsers({ search: search,  sortBy: sortBy, sortOrder: sortOrder, page: page - 1, limit: pageSize, isBlocked: filterValue });
 
-            setUsersData(response);
-            setPagination(prev => ({
-              ...prev,
-              current: page,
-              pageSize,
-            }))
-            
-        } catch(error) {
-            handleApiError(error as AxiosError);
-        }
-        
+        setUsersData(response);
+        setPagination(prev => ({
+          ...prev,
+          current: page,
+          pageSize,
+        }))
+
     }, [search, sortBy, sortOrder])
 
     useEffect(() => {     

@@ -1,37 +1,8 @@
-import axios from 'axios';
-import { tokenManager } from '../helper/tokenManager';
 import { User, MetaResponse, UserFilters } from '../types/admin.models.types'
-
-const API_URL = import.meta.env.PROD 
-  ? import.meta.env.VITE_API_BASE + '/api/v1' 
-  : '/api/v1';
-
-
-const accessToken = tokenManager.getAccessToken();
-
-const apiClient = axios.create({
-    baseURL: API_URL,
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
-    }
-});
-
-apiClient.interceptors.request.use(config => {
-    const accessToken = tokenManager.getAccessToken();
-    
-    if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`
-    }
-
-    return config
-})
-
-
+import { apiClient } from '../api/client'
 
 export async function getAllUsers(filters: UserFilters = {}): Promise<MetaResponse<User>> {
-  
-    
+
     const response = await apiClient.get(
         '/admin/users',
         { params: filters }
@@ -39,7 +10,6 @@ export async function getAllUsers(filters: UserFilters = {}): Promise<MetaRespon
     
     return response.data
 }
-
 
 export async function getUserById(id: number): Promise<User> {
 
@@ -51,10 +21,10 @@ export async function getUserById(id: number): Promise<User> {
 }
 
 export async function editUserById(
-    id: number | null,
-    email: string | null,
-    phoneNumber: string | null,
-    username: string | null,
+    id: number,
+    email: string,
+    phoneNumber: string,
+    username: string,
 ): Promise<User | string> {
 
     const payload = {
@@ -99,7 +69,7 @@ export async function unblockUser(id: number): Promise<User | string> {
     return response.data
 }
 
-export async function updateUserRights(id: number, roles: Object): Promise<User | string> {
+export async function updateUserRights(id: number, roles: string[]): Promise<User | string> {
 
     const response = await apiClient.post(
         `/admin/users/${id}/rights`,

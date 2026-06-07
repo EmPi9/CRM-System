@@ -3,12 +3,10 @@ import AuthPhoto from '../assets/illustration.jpg'
 import AuthLogo from '../assets/logo.jpg'
 import { authorizeUser, getUserProfile } from '../api/users';
 import { useForm } from 'antd/es/form/Form';
-import { AxiosError } from 'axios';
-import { handleApiError } from '../helper/handleApiError'
 import { useNavigate } from 'react-router';
 import { tokenManager } from '../helper/tokenManager';
 import { store } from '../store';
-import { setAuthorized, setIsAdmin, setIsModrator } from '../store/authSlice'
+import { setAuthorized, setRoleUser } from '../store/authSlice'
 
 const { Title, Text, Link } = Typography;
  
@@ -17,28 +15,17 @@ export default function AuthorizationForm() {
     const navigate = useNavigate();
 
     const handleSubmit = async (values: { login: string, password: string }) => {
-        try {
-            const response = await authorizeUser(values.login, values.password);
-            tokenManager.setAccessToken(response.accessToken);
-            tokenManager.setRefreshToken(response.refreshToken);
-            store.dispatch(setAuthorized(true));
-            const userRole = await getUserProfile();
+        const response = await authorizeUser(values.login, values.password);
 
-            userRole.roles.forEach((role: string) => {
-                if (role === 'ADMIN'){
-                    store.dispatch(setIsAdmin(true));
-                } 
-                if (role === 'MODERATOR') {
-                    store.dispatch(setIsModrator(true));
-                }
-            })
-           
-            form.resetFields();
-            await navigate('/');
-        } catch(error: AxiosError) {
-            handleApiError(error); 
-        }
-        
+        tokenManager.setAccessToken(response.accessToken);
+        tokenManager.setRefreshToken(response.refreshToken);
+        store.dispatch(setAuthorized(true));
+        form.resetFields();
+
+        const userRole = await getUserProfile();
+        store.dispatch(setRoleUser(userRole.roles));
+
+        await navigate('/');
     }
 
     return(

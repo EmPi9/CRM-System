@@ -1,37 +1,10 @@
-import axios from 'axios';
 import { tokenManager } from '../helper/tokenManager';
-
 import { UserRegistration } from '../types/users.models.types'
-
-const API_URL = import.meta.env.PROD 
-  ? import.meta.env.VITE_API_BASE + '/api/v1' 
-  : '/api/v1';
-
+import { apiClient } from '../api/client'
 interface UserAuthorization { 
   login: string; 
   password: string;
 }
-
-const accessToken = tokenManager.getAccessToken();
-
-const apiClient = axios.create({
-    baseURL: API_URL,
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
-    }
-});
-
-apiClient.interceptors.request.use(config => {
-    const accessToken = tokenManager.getAccessToken();
-    
-    if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`
-    }
-
-    return config
-})
-
 
 export async function registerUser(
     login: string, 
@@ -79,6 +52,8 @@ export async function getUserProfile() {
     const response = await apiClient.get(
         '/user/profile',
     )
+
+    console.log();
 
     return response.data
 }

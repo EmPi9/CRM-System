@@ -5,7 +5,6 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { openNotification } from '../helper/notification'
-import { handleApiError } from '../helper/handleApiError'
 
 export default function RegistrationForm(){
     const MAX_CHARACTERS_REGISTER = 60;
@@ -22,15 +21,10 @@ export default function RegistrationForm(){
         email: string,
         phoneNumber?: string  
     }) => {
-      try {
-        await registerUser(values.login, values.username, values.password, values.email, values.phoneNumber);
-        setIsFormFilled(true)
-        openNotification('Успешно', 'Регистрация прошла успешно. Для авторизации, перейдите на страницу авторизации для входа в систему')
-        form.resetFields();
-      } catch(error: AxiosError) {
-        handleApiError(error);
-          
-      }
+      await registerUser(values.login, values.username, values.password, values.email, values.phoneNumber);
+      setIsFormFilled(true)
+      openNotification('Успешно', 'Регистрация прошла успешно. Для авторизации, перейдите на страницу авторизации для входа в систему')
+      form.resetFields();
     }  
 
     return (

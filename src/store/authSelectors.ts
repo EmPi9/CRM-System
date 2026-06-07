@@ -8,13 +8,7 @@ export const selectIsAuthorized = createSelector(
     (auth) => auth.isAuthorized,
 )
 
-export const selectIsAdmin = createSelector(
+export const selectUserRole = createSelector(
     selectAuth,
-    (auth) => auth.isAdmin
+    (auth) => auth.roleUser
 )
-
-export const selectIsModerator = createSelector(
-    selectAuth,
-    (auth) => auth.isModerator
-)
-

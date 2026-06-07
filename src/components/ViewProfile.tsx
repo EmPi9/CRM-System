@@ -4,7 +4,6 @@ import { Typography, Space } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { Button } from 'antd'
-import { handleApiError } from '../helper/handleApiError'
 import { tokenManager } from '../helper/tokenManager';
 import { store } from '../store';
 import { logoutAuth } from '../store/authSlice'
@@ -28,15 +27,9 @@ export default function ViewProfile() {
 
     useEffect(() => {
         async function fetchProfile() {
-            try {
-                const data = await getUserProfile();
-                setProfileData(data);
-            } catch(err: AxiosError) {
-                store.dispatch(logoutAuth())
-                tokenManager.clearToken()
-                await navigate('/authorization');
-                handleApiError(err);  
-            }
+           
+            const data = await getUserProfile();
+            setProfileData(data);
 
         }
 
@@ -44,14 +37,10 @@ export default function ViewProfile() {
     }, [])
 
     const handleLogout = async () => {
-        try {
-            await logout();
-            await navigate('/authorization');
-            store.dispatch(logoutAuth())
-            tokenManager.clearToken()
-        } catch(err: AxiosError) {
-            handleApiError(err);  
-        }
+        await logout();
+        await navigate('/authorization');
+        store.dispatch(logoutAuth())
+        tokenManager.clearToken()
     }
 
 
