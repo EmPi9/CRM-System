@@ -1,75 +1,10 @@
-import axios from 'axios';
 import { tokenManager } from '../helper/tokenManager';
-import { selectIsAuthorized } from '../store/authSelectors';
-import { useSelector } from "react-redux"
 import { UserRegistration } from '../types/users.models.types'
-
-const API_URL = import.meta.env.PROD 
-  ? import.meta.env.VITE_API_BASE + '/api/v1' 
-  : '/api/v1';
-
+import { apiClient } from '../api/client'
 interface UserAuthorization { 
   login: string; 
   password: string;
 }
-
-const accessToken = tokenManager.getAccessToken();
-
-const apiClient = axios.create({
-    baseURL: API_URL,
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
-    }
-});
-
-apiClient.interceptors.request.use(config => {
-    const accessToken = tokenManager.getAccessToken();
-    
-    if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`
-    }
-
-    return config
-})
-
-apiClient.interceptors.response.use(
-    res => res,
-    async error => {
-        const original = error.config;
-
-        if(error.response?.status === 401 && !original._retry){
-            original._retry = true
-
-            try {
-                const isAuthorized = useSelector(selectIsAuthorized);
-
-                if(isAuthorized === false){
-                    throw new Error('Нет рефреш токена');
-                }
-
-                const { data } = await axios.post(
-                    '/auth/refresh',
-                    { refreshToken }
-                )
-
-                tokenManager.setAccessToken(data.accessToken);
-                tokenManager.setRefreshToken(data.refreshToken);
-
-                original.headers.Authotization = `Bearer ${data.accessToken}`;
-                return apiClient(original);
-                
-            } catch {
-                tokenManager.clearToken();
-                
-
-                return Promise.reject(error); 
-            }
-        }
-        return Promise.reject(error);
-    }
-)
-
 
 export async function registerUser(
     login: string, 
@@ -112,11 +47,13 @@ export async function authorizeUser (
 
 }
 
-export default async function getUserProfile() {
+export async function getUserProfile() {
 
     const response = await apiClient.get(
         '/user/profile',
     )
+
+    console.log();
 
     return response.data
 }

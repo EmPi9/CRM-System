@@ -1,10 +1,14 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
-export const selectAuth = (state: RootState) => state.auth;
+const selectAuth = (state: RootState) => state.auth;
 
 export const selectIsAuthorized = createSelector(
     selectAuth,
-    (auth) => auth.isAuthorized
+    (auth) => auth.isAuthorized,
 )
 
+export const selectUserRole = createSelector(
+    selectAuth,
+    (auth) => auth.roleUser
+)
