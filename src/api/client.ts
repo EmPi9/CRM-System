@@ -44,7 +44,6 @@ apiClient.interceptors.response.use(
             try {
                 const newAccessToken = await refreshToken();
                 
-                console.log(newAccessToken)
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                 return apiClient(originalRequest);
             } catch (refreshError) {
@@ -72,6 +71,5 @@ apiClient.interceptors.request.use( config => {
         config.headers.Authorization = `Bearer ${accessToken}`
     }
 
-    console.log('Исходящие заголовки:', config.headers);
     return config
 })

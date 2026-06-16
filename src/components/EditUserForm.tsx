@@ -19,8 +19,8 @@ export function EditUserForm() {
     const isAdmin = isRole('ADMIN');
 
     const formInitialValues = { 
-        username: user.username,
-        email: user.email,
+        username: user?.username,
+        email: user?.email,
         phoneNumber: user?.phoneNumber
     };
 

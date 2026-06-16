@@ -53,8 +53,6 @@ export async function getUserProfile() {
         '/user/profile',
     )
 
-    console.log();
-
     return response.data
 }
 
