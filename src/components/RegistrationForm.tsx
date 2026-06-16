@@ -2,17 +2,16 @@ import { Form, Input, Typography, Flex, Button, InputNumber } from "antd";
 import { registerUser } from '../api/users'
 import { useForm } from 'antd/es/form/Form';
 import { useState } from 'react'
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { openNotification } from '../helper/notification'
-import { handleApiError } from '../helper/handleApiError'
 
 export default function RegistrationForm(){
     const MAX_CHARACTERS_REGISTER = 60;
     const navigate = useNavigate();
-    const [form] = useForm()
+    const [ form ] = useForm()
     const { Title, Text, Link } = Typography;
-    const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
+    const  [isFormFilled, setIsFormFilled ] = useState<boolean>(false);
     
 
     const handleSubmit = async (values: { 
@@ -22,15 +21,10 @@ export default function RegistrationForm(){
         email: string,
         phoneNumber?: string  
     }) => {
-      try {
-        await registerUser(values.login, values.username, values.password, values.email, values.phoneNumber);
-        setIsFormFilled(true)
-        openNotification('Успешно', 'Регистрация прошла успешно. Для авторизации, перейдите на страницу авторизации для входа в систему')
-        form.resetFields();
-      } catch(error: AxiosError) {
-        handleApiError(error);
-          
-      }
+      await registerUser(values.login, values.username, values.password, values.email, values.phoneNumber);
+      setIsFormFilled(true)
+      openNotification('Успешно', 'Регистрация прошла успешно. Для авторизации, перейдите на страницу авторизации для входа в систему')
+      form.resetFields();
     }  
 
     return (

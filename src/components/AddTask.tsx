@@ -1,8 +1,6 @@
 import { addTask } from '../api/todos'
 import { Flex, Form, Button, Input } from 'antd'
 import { useForm } from 'antd/es/form/Form';
-import { AxiosError } from 'axios';
-import { handleApiError } from '../helper/handleApiError'
 interface FetchData {
     fetchData: () => Promise<void>;
 }
@@ -11,13 +9,9 @@ export default function AddTask({ fetchData }: FetchData) {
     const [form] = useForm()
 
     const handleSubmit = async (values: { todo: string }): Promise<void> => {
-        try {
-            await addTask(values.todo);
-            form.resetFields();
-            await fetchData();
-        } catch(error: AxiosError) {
-            handleApiError(error);          
-        }
+        await addTask(values.todo);
+        form.resetFields();
+        await fetchData();
     }
 
     return (

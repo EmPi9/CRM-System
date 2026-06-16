@@ -1,14 +1,12 @@
 import { Flex, Card, Form, Button, Input, Typography } from 'antd'
 import AuthPhoto from '../assets/illustration.jpg'
 import AuthLogo from '../assets/logo.jpg'
-import { authorizeUser } from '../api/users';
+import { authorizeUser, getUserProfile } from '../api/users';
 import { useForm } from 'antd/es/form/Form';
-import { AxiosError } from 'axios';
-import { handleApiError } from '../helper/handleApiError'
 import { useNavigate } from 'react-router';
 import { tokenManager } from '../helper/tokenManager';
 import { store } from '../store';
-import { setAuthorized } from '../store/authSlice'
+import { setAuthorized, setRoleUser } from '../store/authSlice'
 
 const { Title, Text, Link } = Typography;
  
@@ -17,17 +15,17 @@ export default function AuthorizationForm() {
     const navigate = useNavigate();
 
     const handleSubmit = async (values: { login: string, password: string }) => {
-        try {
-            const respose = await authorizeUser(values.login, values.password);
-            tokenManager.setAccessToken(respose.accessToken);
-            tokenManager.setRefreshToken(respose.refreshToken);
-            store.dispatch(setAuthorized(true));
-        } catch(error: AxiosError) {
-            handleApiError(error); 
-        }
+        const response = await authorizeUser(values.login, values.password);
+
+        tokenManager.setAccessToken(response.accessToken);
+        tokenManager.setRefreshToken(response.refreshToken);
+        store.dispatch(setAuthorized(true));
         form.resetFields();
-        navigate('/');
-        
+
+        const userRole = await getUserProfile();
+        store.dispatch(setRoleUser(userRole.roles));
+
+        await navigate('/');
     }
 
     return(

@@ -4,8 +4,6 @@ import { getTodos } from '../api/todos'
 import AddTask from "../components/AddTask";
 import FilterTask from "../components/FilterTask";
 import ListTasks from "../components/ListTasks";
-import { AxiosError } from 'axios';
-import { handleApiError } from '../helper/handleApiError'
 import { MetaResponse, Filters, Todo, TodoInfo } from "../types/todos.models.types"
 
 export default function TodoListPage() {
@@ -24,12 +22,8 @@ export default function TodoListPage() {
 
 
     const fetchData = useCallback(async (): Promise<void> => {
-        try {
-            const data = await getTodos(filterRef.current);
-            setTodos(data);
-        } catch(error: AxiosError) {
-            handleApiError(error)             
-        }
+        const data = await getTodos(filterRef.current);
+        setTodos(data);
     }, [])
 
     useEffect(() => {

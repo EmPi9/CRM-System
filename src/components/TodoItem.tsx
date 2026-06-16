@@ -5,9 +5,6 @@ import { EditOutlined, PlusOutlined, CloseOutlined, DeleteOutlined } from '@ant-
 import { Card, Flex, Input, Form, Button } from 'antd' 
 import { FetchDataProp, Todo } from "../types/todos.models.types"
 import Typography from "antd/es/typography/Text";
-import { handleApiError } from '../helper/handleApiError'
-import { AxiosError } from 'axios';
-
 
 interface Props {
      fetchData: FetchDataProp,
@@ -20,12 +17,8 @@ export default function TodoItem({ fetchData, item, setIsNeedUpdate }: Props) {
     const [inputValue, setInputValue] = useState<string>('')
 
     const handleDelete = async (taskId: number): Promise<void> =>  {
-        try {
-            await deleteTask(taskId);
-            await fetchData();
-        } catch(error: AxiosError) {
-            handleApiError(error);            
-        }
+      await deleteTask(taskId);
+      await fetchData();
     }
     
     const handleStartEditing = (title: string) => {
@@ -35,25 +28,15 @@ export default function TodoItem({ fetchData, item, setIsNeedUpdate }: Props) {
     }
 
     const handleSaveEditings = async (values: { editTask: string }, taskId: number, taskDone: boolean): Promise<void> =>  {
-        try {
-            await editTask(taskId, values.editTask, taskDone);
-        } catch(error: AxiosError) {
-            handleApiError(error)            
-        }
+        await editTask(taskId, values.editTask, taskDone);
         setIsEditing(false)
         setIsNeedUpdate(true);
     }
 
     const handleCompleteTask = async (taskId: number, taskTitle: string, taskDone: boolean): Promise<void> => {
         taskDone = !taskDone
-
-        try {
-            await editTask(taskId, taskTitle, taskDone);
-            await fetchData();
-        } catch(error: AxiosError) {
-            handleApiError(error)            
-        }
-        
+        await editTask(taskId, taskTitle, taskDone);
+        await fetchData();
     }
 
     const handleStopEditing = async (): Promise<void> => {

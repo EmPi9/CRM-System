@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import getUserProfile, { logout } from '../api/users'
+import { getUserProfile, logout } from '../api/users'
 import { Typography, Space } from 'antd';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { Button } from 'antd'
-import { handleApiError } from '../helper/handleApiError'
 import { tokenManager } from '../helper/tokenManager';
 import { store } from '../store';
 import { logoutAuth } from '../store/authSlice'
@@ -28,22 +27,20 @@ export default function ViewProfile() {
 
     useEffect(() => {
         async function fetchProfile() {
+           
             const data = await getUserProfile();
             setProfileData(data);
+
         }
 
         fetchProfile();
     }, [])
 
     const handleLogout = async () => {
-        try {
-            await logout();
-            await navigate('/authorization');
-            store.dispatch(logoutAuth())
-            tokenManager.clearToken()
-        } catch(err: AxiosError) {
-            handleApiError(err);  
-        }
+        await logout();
+        await navigate('/authorization');
+        store.dispatch(logoutAuth())
+        tokenManager.clearToken()
     }
 
 
