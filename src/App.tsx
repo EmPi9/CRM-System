@@ -12,6 +12,7 @@ import { selectIsAuthorized } from './store/authSelectors';
 import { useSelector } from "react-redux"
 import { ProfileUserPage } from './pages/ProfileUserPage';
 import { Flex } from 'antd';
+import ChartStatusOperationPage from './pages/ChartStatusOperationPage';
 
 function App() {
   
@@ -41,7 +42,8 @@ function App() {
           <Route path="/registration" element={<RegistrationPage />} />
           <Route path="/authorization" element={<AuthorizationPage />} />
           <Route path="/users" element={<UsersPage />} />
-          <Route path="/users/edit/:id" element={<ProfileUserPage />} /> 
+          <Route path="/users/edit/:id" element={<ProfileUserPage />} />
+          <Route path="/operations" element={<ChartStatusOperationPage />} />
         </Routes>
       </Flex>
   )
